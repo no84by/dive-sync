@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dive-sync"
+version = "0.1.0"
+description = "Experimental local tool to sync dive logs between Garmin (Connect/Dive) and the SSI logbook. Runs only on your computer, stores nothing, not endorsed by Garmin or SSI."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Web Environment",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+]
+dependencies = [
+  "garminconnect==0.3.20",
+  "requests>=2.31,<3",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+dive-sync = "dive_sync.cli:main"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/", "agents/", "tests/", "docs/spec.md", "README.md", "SECURITY.md", "CHANGELOG.md", "AGENTS.md", "LICENSE"]
+exclude = [".claude/", ".agents/", "docs/screenshots/"]
+
+[tool.hatch.build.targets.sdist.force-include]
+# hatch drops this file when it is also reachable through the .claude/.agents symlinks
+"agents/skills/dive-sync/SKILL.md" = "agents/skills/dive-sync/SKILL.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dive_sync"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"agents/skills/dive-sync" = "dive_sync/agent_skill/dive-sync"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = ["S101", "S603", "S311"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106", "B011"]

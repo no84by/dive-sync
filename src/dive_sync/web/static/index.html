@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>dive-sync</title>
+<style>
+:root{color-scheme:light;--bg:#faf9f6;--card:#fffefa;--ink:#191d22;--mute:#565e67;--line:#b6bdc4;--accent:#1e3a5f;--signal:#ad3025;--ok:#285b45;--warn:#ad3025;--bad:#ad3025;--wash:#efeee9;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+@media(prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#131a22;--card:#19222c;--ink:#f0f0e9;--mute:#b3beca;--line:#536373;--accent:#afc9e8;--signal:#ff998b;--ok:#9bd2b7;--warn:#ff998b;--bad:#ff998b;--wash:#202d3a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+header,main{max-width:1184px;margin:0 auto;padding-left:40px;padding-right:40px}
+header{padding-top:44px;padding-bottom:28px;display:grid;grid-template-columns:1fr auto;gap:12px 24px;border-bottom:2px solid var(--accent)}
+header h1{font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.065em;font-weight:700;margin:0;color:var(--accent)}
+header>.mute{grid-column:1/-1;font-size:14px}
+.badge{align-self:start;border-top:3px solid var(--signal);padding-top:8px;color:var(--warn);font:600 11px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase}
+main{padding-top:24px;padding-bottom:56px}
+h2,h3,h4{line-height:1.2;color:var(--accent);letter-spacing:-.025em}
+h2{font-size:32px}h3{font-size:26px}h4{font-size:18px;margin:32px 0 12px}
+p{max-width:85ch}
+.notice{border-left:3px solid var(--signal);padding:0 0 0 16px;font-size:13px;color:var(--mute);max-width:90ch}
+.notice b{color:var(--ink)}
+.card{min-width:0;border-top:1px solid var(--line);padding:24px 0 0;margin-top:32px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;min-width:0}
+.section-label{display:block;font:12px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
+.st{font-size:13px;margin:8px 0 24px;overflow-wrap:anywhere}
+label{display:block;font-size:13px;color:var(--mute);margin-top:16px}
+input[type=email],input[type=password],input[type=text],input[type=number]{display:block;width:100%;min-height:48px;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-bottom-color:var(--mute);border-radius:0;background:var(--card);color:var(--ink);font:inherit;font-size:16px}
+input[type=number],input[name=code]{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button{font:600 14px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;min-height:44px;max-width:100%;padding:11px 20px;border-radius:0;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;margin-top:16px;overflow-wrap:anywhere}
+button:hover:not(:disabled){background:var(--accent);color:var(--bg)}
+#understand,#make-plan,#apply{background:var(--signal);border-color:var(--signal);color:var(--bg)}
+#understand:hover,#make-plan:hover,#apply:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+body:has(#plan-card:not(.hidden)) #make-plan{background:transparent;border-color:var(--accent);color:var(--accent)}
+button:disabled,#apply:disabled,#make-plan:disabled{background:var(--wash);border-color:var(--line);color:var(--mute);cursor:not-allowed}
+:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+input[type=checkbox]{width:20px;height:20px;flex:none;margin:0;accent-color:var(--accent);cursor:pointer}
+label.row{min-height:44px;padding:8px 12px 8px 0;color:var(--ink)}
+.selection{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:0;cursor:pointer}
+.table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+#dives{min-width:850px}
+table.plan{table-layout:fixed;min-width:720px}
+#result table{min-width:580px}
+th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+th{font:600 11px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);border-top:1px solid var(--line);border-bottom:2px solid var(--accent)}
+td{font-family:var(--mono)}
+#dives td:nth-child(2),#dives td:nth-child(7),.plan td:nth-child(2),.plan td:last-child,#result td{font-family:inherit}
+td:has(.selection){padding:2px 0;width:44px}
+tbody tr:hover{background:var(--wash)}
+.state{font-size:12px;border-left:2px solid currentColor;padding-left:8px;white-space:nowrap}
+.s-matched{color:var(--ok)}.s-merged,.s-ambiguous{color:var(--warn)}.s-garmin_only{color:var(--accent)}
+.mute{color:var(--mute)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.row{display:flex;gap:12px 24px;align-items:center;flex-wrap:wrap;min-width:0}
+#counts{font:12px/1.6 var(--mono);flex:1;min-width:180px}
+#reload{margin-top:0}
+summary{cursor:pointer;min-height:44px;padding:12px 0;font-size:13px}
+details[open]{border-bottom:1px solid var(--line);padding-bottom:20px}
+.hidden{display:none}
+.lock::before{content:"[locked] ";font:11px var(--mono);color:var(--mute)}
+.verified{width:14px;height:14px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:1.8}
+code{font:13px var(--mono)}
+#gate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;z-index:9;overflow-y:auto}
+#gate .card{background:var(--card);width:100%;max-width:680px;max-height:100%;overflow-y:auto;margin:0;padding:32px;border:1px solid var(--line);border-top:4px solid var(--signal)}
+#gate p{font-size:15px;line-height:1.6}
+body:has(#gate){overflow:hidden}
+body:has(#gate) header,body:has(#gate) main{visibility:hidden}
+@media(max-width:640px){header,main{padding-left:20px;padding-right:20px}header{padding-top:28px;gap:16px}header>.mute{max-width:30ch}.grid{grid-template-columns:minmax(0,1fr);gap:0}.card{margin-top:28px;padding-top:20px}h3{font-size:23px}#gate{padding:12px}#gate .card{padding:24px 20px}#gate h2{font-size:28px}.row{gap:8px 16px}details .grid{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.err{color:var(--bad, #b3261e);font-weight:600;margin:10px 0 0;}
+.err[hidden]{display:none}
+</style>
+</head>
+<body>
+<div id="gate"><div class="card">
+  <h2 style="margin-top:0">Before you start</h2>
+  <p><b>Experimental.</b> dive-sync is an independent, experimental tool. It is <b>not affiliated with, endorsed by, or supported by Garmin or SSI</b> (Scuba Schools International). It uses their apps' unofficial interfaces, which they can change or block at any time — when that happens this tool stops working, and it may make mistakes before it notices.</p>
+  <p><b>Runs on your computer. Stores nothing.</b> The app runs only on this computer. Your passwords, login sessions and dive data are <b>not saved</b> — they are kept in memory while the app is open and forgotten when you close it. Nothing is sent anywhere except directly to Garmin and SSI. There is no server of ours, no account, no tracking.</p>
+  <p><b>No warranty.</b> Provided "as is" under the MIT License, without warranty of any kind. You are responsible for the changes you approve in your logbooks — check the preview before you sync.</p>
+  <p class="mute" style="font-size:13px">A personal one-off, shared in case it helps. No support or follow-up is promised.</p>
+  <button id="understand">I understand</button>
+</div></div>
+
+<header><h1>dive-sync</h1><span class="badge">experimental</span><span class="mute">Garmin → SSI logbook · runs on this computer · stores nothing</span></header>
+<main>
+<div class="notice"><b>Not affiliated with or endorsed by Garmin or SSI.</b> Unofficial interfaces, may break at any time. Nothing is saved; closing the app forgets everything. No warranty (MIT).</div>
+
+<p class="err" id="global-err" role="alert" aria-live="assertive" hidden></p>
+<section class="grid">
+  <div class="card" id="box-garmin">
+    <span class="section-label">01 / Source logbook</span>
+    <h3 style="margin:0">Garmin</h3>
+    <div class="st mute">Not logged in</div>
+    <form class="login" data-svc="garmin" autocomplete="off" novalidate>
+      <label>Email<input type="email" name="email" required autocomplete="username"></label>
+      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <button type="submit">Log in to Garmin</button>
+      <p class="err" role="alert" aria-live="assertive" hidden></p>
+    </form>
+    <form class="mfa hidden" autocomplete="off" novalidate>
+      <label>Enter the code Garmin sent you<input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" required></label>
+      <button type="submit">Confirm code</button>
+      <p class="err" role="alert" aria-live="assertive" hidden></p>
+    </form>
+    <button class="secondary logout hidden" data-svc="garmin">Log out</button>
+  </div>
+  <div class="card" id="box-ssi">
+    <span class="section-label">02 / Destination logbook</span>
+    <h3 style="margin:0">SSI (MySSI)</h3>
+    <div class="st mute">Not logged in</div>
+    <form class="login" data-svc="ssi" autocomplete="off" novalidate>
+      <label>Email<input type="email" name="email" required autocomplete="username"></label>
+      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <button type="submit">Log in to SSI</button>
+      <p class="err" role="alert" aria-live="assertive" hidden></p>
+      <div class="mute" style="font-size:12px;margin-top:6px">Signed up with Google/Facebook? Set an SSI password first (“Lost password” on MySSI).</div>
+    </form>
+    <button class="secondary logout hidden" data-svc="ssi">Log out</button>
+  </div>
+</section>
+
+<section class="card hidden" id="dives-card">
+  <span class="section-label">03 / Reconcile</span>
+  <div class="row"><h3 style="margin:0">Dives</h3><span id="counts" class="mute"></span>
+    <button class="secondary" id="reload">Reload</button></div>
+  <p class="mute" style="font-size:13px">Matched dives are updated (empty fields filled; on conflicts Garmin wins). Fields SSI locks after a training center verified the dive are never changed. Tick Garmin-only dives to create them in SSI (they are numbered after your highest SSI dive).</p>
+  <div class="row">
+    <label class="row" style="margin:0"><input type="checkbox" id="opt-wins" checked> Garmin wins on conflicts</label>
+    <label class="row" style="margin:0"><input type="checkbox" id="opt-profile"> Include dive profile (experimental)</label>
+  </div>
+  <details style="margin-top:8px"><summary class="mute">New dives: dive site / training center (optional)</summary>
+    <div class="grid">
+      <label>SSI dive site id<input type="number" id="opt-site"></label>
+      <label>SSI training center id — sends the center a verification request<input type="number" id="opt-center"></label>
+    </div>
+  </details>
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Dive comparison"><table id="dives"><thead><tr>
+    <th></th><th>State</th><th>SSI</th><th>Date</th><th>Depth</th><th>Time</th><th>Garmin</th><th>Depth</th><th>Time</th></tr></thead><tbody></tbody></table></div>
+  <button id="make-plan">Preview changes</button>
+  <p class="err" role="alert" aria-live="assertive" hidden></p>
+</section>
+
+<section class="card hidden" id="plan-card">
+  <h3 style="margin-top:0">Preview — nothing has been sent yet</h3>
+  <div id="plan"></div>
+  <div class="row"><button id="apply">Sync these changes</button><button class="secondary" id="cancel">Back</button></div>
+  <p class="err" role="alert" aria-live="assertive" hidden></p>
+</section>
+
+<section class="card hidden" id="result-card">
+  <h3 style="margin-top:0">Result (read back from SSI)</h3>
+  <div id="result"></div>
+</section>
+<p class="mute" style="font-size:12px;margin-top:24px">“Garmin”, “Garmin Connect”, “Garmin Dive” and “Descent” are trademarks of Garmin Ltd. “SSI” and “MySSI” are trademarks of Scuba Schools International. Used only to describe compatibility.</p>
+</main>
+<script>
+"use strict";
+const KEY = (() => {
+  let k = "__RUN_KEY__";
+  try { if (k) sessionStorage.setItem("dive-sync-key", k); else k = sessionStorage.getItem("dive-sync-key") || ""; } catch (e) { /* storage blocked: reload needs a new link */ }
+  return k;
+})();
+history.replaceState(null, "", "/");
+const $ = (s, el = document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let currentPlan = null;
+
+async function api(path, body) {
+  const opt = {headers: {"X-Run-Key": KEY}};
+  if (body !== undefined) { opt.method = "POST"; opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
+  const r = await fetch(path, opt);
+  const j = await r.json().catch(() => ({error: "app not reachable — is dive-sync still running?"}));
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+function say(el, msg) { const e = el && (el.classList.contains("err") ? el : $(".err", el)); if (!e) return; e.textContent = msg || ""; e.hidden = !msg; }
+function busy(btn, on, text) { if (!btn) return; btn.disabled = on; if (on) { btn.dataset.t = btn.textContent; btn.textContent = text || "Working…"; } else if (btn.dataset.t) btn.textContent = btn.dataset.t; }
+
+$("#understand").onclick = () => $("#gate").remove();
+
+async function refreshStatus() {
+  const s = await api("/api/status");
+  for (const svc of ["garmin", "ssi"]) {
+    const box = $("#box-" + svc), st = s[svc];
+    $(".st", box).innerHTML = st.status === "logged_in" ? `<span class="ok">Logged in</span> as ${esc(st.name)}`
+      : st.status === "needs_mfa" ? `<span class="warn">Waiting for the code</span>` : "Not logged in";
+    $(".login", box).classList.toggle("hidden", st.status !== "logged_out");
+    $(".logout", box).classList.toggle("hidden", st.status === "logged_out");
+    const mfa = $(".mfa", box); if (mfa) mfa.classList.toggle("hidden", st.status !== "needs_mfa");
+  }
+  $("#dives-card").classList.toggle("hidden", !s.ready);
+  return s;
+}
+
+document.querySelectorAll("form.login").forEach(f => f.onsubmit = async e => {
+  e.preventDefault();
+  const svc = f.dataset.svc, btn = $("button", f);
+  say(f, "");
+  if (!f.email.value.trim() || !f.password.value) { say(f, "Enter your e-mail and password."); (f.email.value.trim() ? f.password : f.email).focus(); return; }
+  busy(btn, true, svc === "garmin" ? "Logging in (can take 20 s)…" : "Logging in…");
+  try {
+    await api("/api/login/" + svc, {email: f.email.value, password: f.password.value});
+    f.password.value = "";
+    const s = await refreshStatus();
+    if (s.ready) loadDives();
+  } catch (err) { f.password.value = ""; say(f, err.message); f.password.focus(); } finally { busy(btn, false); }
+});
+document.querySelector("form.mfa").onsubmit = async e => {
+  e.preventDefault(); const f = e.target, btn = $("button", f); say(f, "");
+  if (!f.code.value.trim()) { say(f, "Enter the code Garmin sent you."); f.code.focus(); return; }
+  busy(btn, true);
+  try { await api("/api/mfa", {code: f.code.value}); f.code.value = ""; const s = await refreshStatus(); if (s.ready) loadDives(); }
+  catch (err) { f.code.value = ""; say(f, err.message + " — try again, or log out and start over."); f.code.focus(); } finally { busy(btn, false); }
+};
+document.querySelectorAll("button.logout").forEach(b => b.onclick = async () => {
+  try { await api("/api/logout/" + b.dataset.svc, {}); await refreshStatus(); } catch (err) { say($("#global-err"), err.message); }
+});
+
+const STATE = {matched: "matched", merged: "merged session", ambiguous: "unsure", ssi_only: "SSI only", garmin_only: "Garmin only"};
+async function loadDives(refresh) {
+  const btn = $("#reload"); busy(btn, true, "Loading…");
+  try {
+    const d = await api("/api/dives" + (refresh ? "?refresh=1" : ""));
+    $("#counts").textContent = Object.entries(d.counts).map(([k, v]) => `${v} ${STATE[k] || k}`).join(" · ");
+    $("#dives tbody").innerHTML = d.rows.map(r => {
+      const s = r.ssi || {}, g = r.garmin || {};
+      const tick = r.state === "matched" ? `<label class="selection"><input aria-label="Select SSI dive ${esc(s.nr)} for update" type="checkbox" class="pick-upd" value="${esc(s.id)}" checked></label>`
+        : r.state === "garmin_only" ? `<label class="selection"><input aria-label="Create SSI dive from Garmin ${esc(g.id)}" type="checkbox" class="pick-new" value="${esc(g.id)}"></label>` : "";
+      return `<tr><td>${tick}</td><td><span class="state s-${esc(r.state)}">${esc(STATE[r.state])}</span></td>
+        <td>${s.nr ? "#" + esc(s.nr) + (s.verified ? ' <svg class="verified" viewBox="0 0 16 16" role="img" aria-label="verified by a training center"><title>verified by a training center</title><path d="M2 8l4 4 8-9"/></svg>' : "") : ""}</td>
+        <td>${esc((s.start_local || g.start_local || "").replace(/^(\d+)-(\d+)-(\d+)/, "$3.$2.$1"))}</td>
+        <td>${esc(s.max_depth_m ?? "")}</td><td>${esc(s.minutes ?? "")}</td>
+        <td>${g.id ? esc(g.name || "#" + (g.number ?? "")) : r.garmin_ids.length > 1 ? esc(r.garmin_ids.length) + " Garmin dives" : ""}</td>
+        <td>${esc(g.max_depth_m ?? "")}</td><td>${esc(g.minutes ?? "")}</td></tr>`;
+    }).join("");
+  } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
+}
+$("#reload").onclick = () => loadDives(true);
+
+$("#make-plan").onclick = async () => {
+  const btn = $("#make-plan"); busy(btn, true, "Reading Garmin Dive details…");
+  try {
+    const body = {
+      dives: [...document.querySelectorAll(".pick-upd:checked")].map(x => x.value),
+      create: [...document.querySelectorAll(".pick-new:checked")].map(x => x.value),
+      garmin_wins: $("#opt-wins").checked, with_profile: $("#opt-profile").checked,
+      site_id: $("#opt-site").value || null, center_id: $("#opt-center").value || null,
+    };
+    if (body.center_id && !confirm("Linking a training center sends that center a verification request for every new dive. Continue?")) return;
+    currentPlan = await api("/api/plan", body);
+    say($("#dives-card"), "");
+    renderPlan(currentPlan);
+  } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
+};
+
+function renderPlan(p) {
+  const items = p.items.map(it => {
+    const head = it.action === "create" ? `New SSI dive #${esc(it.ssi_nr)} from Garmin ${esc(it.date)}` : `SSI #${esc(it.ssi_nr)} · ${esc(it.date)}${it.verified ? " · verified" : ""}`;
+    const ch = it.changes.map(c => `<tr><td>${c.required ? "" : `<label class="selection"><input aria-label="Include ${esc(c.label)} change" type="checkbox" class="keep" value="${esc(it.garmin_id)}:${esc(c.field)}" checked></label>`}</td>
+      <td>${esc(c.label)}</td><td class="mute">${esc(c.old_shown)}</td><td>${esc(c.new_shown)}</td><td class="mute">${esc(c.why)}</td></tr>`).join("");
+    const kept = it.kept.map(c => `<tr><td></td><td>${esc(c.label)}</td><td>${esc(c.ssi_shown)}</td><td class="mute">${esc(c.garmin_shown)}</td><td class="mute">kept (SSI)</td></tr>`).join("");
+    const sk = it.skipped.map(c => `<tr><td></td><td class="lock">${esc(c.label)}</td><td>${esc(c.ssi_shown ?? "")}</td><td class="mute">${esc(c.garmin_shown)}</td><td class="warn">${esc(c.reason)}</td></tr>`).join("");
+    return `<h4>${head}</h4><div class="table-scroll" tabindex="0" role="region" aria-label="Planned field changes"><table class="plan"><colgroup><col style="width:44px"><col style="width:28%"><col style="width:20%"><col style="width:22%"><col></colgroup><thead><tr><th></th><th>Field</th><th>SSI now</th><th>New (Garmin)</th><th></th></tr></thead><tbody>${ch}${kept}${sk}</tbody></table></div>`;
+  }).join("");
+  $("#plan").innerHTML = `<p><b>${esc(p.summary.update)}</b> dives to update, <b>${esc(p.summary.create)}</b> to create, <b id="plan-count">${esc(p.summary.field_changes)}</b> field changes.</p>`
+    + (p.notes.length ? `<p class="warn">${p.notes.map(esc).join("<br>")}</p>` : "") + (items || "<p>Nothing to change.</p>");
+  $("#apply").disabled = !p.summary.field_changes;
+  $("#plan-card").classList.remove("hidden"); $("#result-card").classList.add("hidden");
+  $("#plan-card").scrollIntoView({behavior: "smooth"});
+}
+$("#plan").addEventListener("change", () => {
+  const n = document.querySelectorAll("#plan .keep:checked").length;
+  const req = currentPlan ? currentPlan.items.reduce((t, it) => t + it.changes.filter(c => c.required).length, 0) : 0;
+  const total = n + req, out = $("#plan-count");
+  if (out) out.textContent = total;
+  $("#apply").disabled = !total;
+});
+$("#cancel").onclick = () => $("#plan-card").classList.add("hidden");
+$("#apply").onclick = async () => {
+  if (!currentPlan) return;
+  const exclude = [...document.querySelectorAll(".keep:not(:checked)")].map(x => x.value);
+  const btn = $("#apply"); busy(btn, true, "Syncing…");
+  try {
+    const r = await api("/api/apply", {plan_id: currentPlan.plan_id, confirm: true, exclude});
+    currentPlan = null; $("#plan-card").classList.add("hidden");
+    $("#result").innerHTML = `<p>${Object.entries(r.summary).map(([k, v]) => `${esc(v)} ${esc(k)}`).join(" · ") || "Nothing sent."}</p><div class="table-scroll" tabindex="0" role="region" aria-label="Sync results"><table><thead><tr><th>Dive</th><th>Status</th><th>Details</th></tr></thead><tbody>`
+      + r.results.map(x => `<tr><td>${x.action === "create" ? "new " : ""}SSI #${esc(x.ssi_nr)} · ${esc(x.date)}</td>
+        <td class="${x.status === "stored" ? "ok" : x.status === "failed" ? "bad" : "warn"}">${esc(x.status)}</td>
+        <td class="mute">${x.error ? esc(x.error) : ""}${typeof x.stored === "number" ? esc(x.stored) + " of " + esc(x.sent) + " planned fields stored. " : ""}${(x.dropped_by_ssi || []).length ? "dropped by SSI: " + esc(x.dropped_by_ssi.join(", ")) : ""}${(x.stored_differently || []).length ? " stored differently: " + esc(x.stored_differently.join(", ")) : ""}</td></tr>`).join("") + "</tbody></table></div>";
+    $("#result-card").classList.remove("hidden");
+    loadDives(true);
+  } catch (err) { say($("#plan-card"), err.message); } finally { busy(btn, false); }
+};
+
+setInterval(() => api("/api/heartbeat", {}).catch(() => {}), 60000);
+if (!KEY) {
+  const g = $("#gate"); if (g) g.remove();
+  say($("#global-err"), "This link was already used or is not valid. Run “dive-sync open” in your terminal (or restart dive-sync) for a new one.");
+} else {
+  refreshStatus().then(s => { if (s.ready) loadDives(); }).catch(err => say($("#global-err"), err.message));
+}
+</script>
+</body>
+</html>
