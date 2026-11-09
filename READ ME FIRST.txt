@@ -1,0 +1,47 @@
+dive-sync - double-click launchers
+==================================
+
+Experimental. Not affiliated with, endorsed by, or supported by Garmin or SSI. Runs only on your
+computer and stores nothing. No warranty (MIT, see LICENSE).
+
+START
+  macOS    double-click  "Start dive-sync (Mac).command"
+  Windows  double-click  "Start dive-sync (Windows).bat"
+  Linux    run           ./start-dive-sync-linux.sh   (or double-click, "Run in terminal")
+
+A window opens, and then the dive-sync page opens in your browser. Keep the window open while you
+use dive-sync; close it to stop.
+
+WHAT THE LAUNCHER DOES
+  1. Finds Python 3.12 or newer (3.13 preferred). If it is missing, it offers to download the
+     official installer from python.org (Mac, Windows) or tells you the command for your Linux
+     package manager.
+     You approve that installer yourself.
+  2. launch.py asks GitHub (github.com/no84by/dive-sync) for the latest dive-sync release. On
+     the first start, or when there is a newer version, it installs that version with its
+     requirements into a private folder. If there is no internet, it starts the version you
+     already have.
+  3. Starts dive-sync.
+
+The private folder holds only the program - never passwords or dive data:
+  macOS    ~/Library/Application Support/dive-sync
+  Windows  %LOCALAPPDATA%\dive-sync
+  Linux    ~/.local/share/dive-sync
+To remove it, run the launcher with --uninstall (for example: python3 launch.py --uninstall),
+then delete this folder.
+
+FIRST START: YOUR COMPUTER MAY WARN YOU
+These files are not signed by Apple or Microsoft.
+  macOS    "cannot be opened because it is from an unidentified developer": right-click the
+           file > Open > Open. On newer macOS: System Settings > Privacy & Security >
+           "Open Anyway". You only have to do this once.
+  Windows  "Windows protected your PC" (SmartScreen): click "More info" > "Run anyway".
+  Linux    if it does not start, make it executable: chmod +x start-dive-sync-linux.sh
+
+WITHOUT THE LAUNCHERS
+  python3 launch.py               (Windows: py -3.13 launch.py)
+  python3 launch.py --version     options after launch.py are passed on to dive-sync
+  python3 launch.py --offline     do not check GitHub for a newer version
+  python3 launch.py --reinstall   install again from scratch
+
+Instructions and source: https://github.com/no84by/dive-sync

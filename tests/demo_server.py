@@ -6,12 +6,12 @@ Demo logins: any e-mail/password works; password "wrong" fails;
 a Garmin e-mail containing "mfa" asks for code 123456.
 """
 
+import datetime as _dt
+
 from dive_sync.service import Session
 from dive_sync.web.server import App
 
-import datetime as _dt
-
-from .fakes import P, FakeGarmin, FakeSSI, full_garmin, ssi_record
+from .fakes import FakeGarmin, FakeSSI, P, full_garmin, ssi_record
 
 
 class DemoSSI(FakeSSI):
@@ -37,7 +37,7 @@ class DemoGarmin(FakeGarmin):
         out = super().dives()
         for d in out:
             if d["id"] in self.GPS:
-                d["_activity"] |= dict(zip(("startLatitude", "startLongitude"), self.GPS[d["id"]]))
+                d["_activity"] |= dict(zip(("startLatitude", "startLongitude"), self.GPS[d["id"]], strict=True))
         return out
 
 

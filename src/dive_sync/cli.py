@@ -146,7 +146,8 @@ def _client_cmd(args, path, body=None, human=None) -> int:
 def cmd_status(args) -> int:
     def h(j):
         return "\n".join(
-            f"{k:7} {v['status']}" + (f"  ({v['name']})" if v.get("name") else "") for k, v in ((k, j[k]) for k in ("garmin", "ssi"))
+            f"{k:7} {j[k]['status']}" + (f"  ({j[k]['name']})" if j[k].get("name") else "")
+            for k in ("garmin", "ssi")
         )
 
     return _client_cmd(args, "/api/status", human=h)

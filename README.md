@@ -42,7 +42,7 @@ troubleshoot setups that don't work on your computer.** The code comes as it is.
 | Garmin Dive API | `https://connectapi.garmin.com/diving/v1` (dive detail, tank sensors, record series) |
 | Garmin Connect API | activity list / activity service (Garmin Connect web/app back end) |
 | `garminconnect` Python library | **0.3.20** (pinned) |
-| Python | 3.12 – 3.13 |
+| Python | 3.12 – 3.13 (tests also pass on 3.15) |
 | Watch / tank transmitters | **Tested only with a Garmin Descent Mk3i** and Descent T2 transmitters |
 
 **Other Garmin dive computers:** it may work with any Garmin watch that logs dives to Garmin Connect
@@ -55,9 +55,21 @@ refuses to write and tells you (exit code 4) — it does not guess.
 
 ## Install
 
+**Easiest — double-click.** Download `dive-sync-launchers.zip` from the
+[Releases page](https://github.com/no84by/dive-sync/releases), unzip it and double-click
+`Start dive-sync (Mac).command`, `Start dive-sync (Windows).bat` or run `start-dive-sync-linux.sh`.
+The launcher finds Python 3.12 or newer (and offers the official python.org installer if it is
+missing), then `launch.py` installs the **latest dive-sync release from GitHub** with its
+requirements into a private folder and starts it. Every start checks for a newer release; without
+internet it starts the version you have. The zip carries no copy of dive-sync itself. `READ ME
+FIRST.txt` in the zip explains the macOS/Windows "unidentified developer" warnings and how to
+uninstall (`python3 launch.py --uninstall`).
+
+**With pipx:**
+
 ```bash
 pipx install git+https://github.com/no84by/dive-sync      # latest from the repository
-# or download the .whl from the Releases page:  pipx install ./dive_sync-0.2.1-py3-none-any.whl
+# or download the .whl from the Releases page:  pipx install ./dive_sync-0.3.0-py3-none-any.whl
 dive-sync                                                  # opens the browser
 ```
 

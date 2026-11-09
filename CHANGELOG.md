@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 — 09.11.2026 (experimental)
+
+- Double-click launchers for macOS, Windows and Linux (`dive-sync-launchers.zip` on the release).
+  They find Python 3.12 or newer, preferring 3.13 (offering the official python.org installer if it is missing); then
+  `launch.py` installs the latest dive-sync release from GitHub with its requirements into a private
+  folder, updates it when a newer release exists, and starts it. Options: `--offline`,
+  `--reinstall`, `--uninstall`.
+
 ## 0.2.1 — 09.11.2026 (experimental)
 
 - Country names SSI stores only as a name, in any language ("Espagne", "Spanien"), are shown in English.

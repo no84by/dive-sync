@@ -64,7 +64,8 @@ class SiteIndex:
             two, three = _code(s.get("iso2")), _code(s.get("odin_countries_code_iso"))
             iso = (two if len(two) == 2 else "") or iso3_to_2.get(three) or name_to_2.get(_name(s)) or three
             iso = sys.intern(iso or str(s.get("odin_dive_sites_meta_country") or "").strip())
-            sid, lat, lon = _int(s.get("odin_dive_sites_id")), _num(s.get("odin_dive_sites_lat")), _num(s.get("odin_dive_sites_lon"))
+            sid = _int(s.get("odin_dive_sites_id"))
+            lat, lon = _num(s.get("odin_dive_sites_lat")), _num(s.get("odin_dive_sites_lon"))
             if not iso or sid is None:
                 continue
             self.by_id[sid] = iso
