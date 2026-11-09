@@ -19,7 +19,8 @@ WHAT THE LAUNCHER DOES
      You approve that installer yourself.
   2. launch.py asks GitHub (github.com/no84by/dive-sync) for the latest dive-sync release. On
      the first start, or when there is a newer version, it installs that version with its
-     requirements into a private folder. If there is no internet, it starts the version you
+     requirements into a private folder, and replaces launch.py with the one from that release
+     (the launcher keeps itself up to date). If there is no internet, it starts the version you
      already have.
   3. Starts dive-sync.
 

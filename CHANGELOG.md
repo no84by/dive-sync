@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.1 — 09.11.2026 (experimental)
+
+- `launch.py` updates itself: every start it takes `launch.py` from the latest release when that
+  differs (a download that is not valid Python is never used; a source checkout is never
+  overwritten). Launchers from 0.3.0 need to be downloaded once more to get this.
+- The certificate fallback for python.org's macOS Python now works (the error came wrapped).
+
 ## 0.3.0 — 09.11.2026 (experimental)
 
 - Double-click launchers for macOS, Windows and Linux (`dive-sync-launchers.zip` on the release).

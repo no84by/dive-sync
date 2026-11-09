@@ -60,7 +60,7 @@ refuses to write and tells you (exit code 4) — it does not guess.
 `Start dive-sync (Mac).command`, `Start dive-sync (Windows).bat` or run `start-dive-sync-linux.sh`.
 The launcher finds Python 3.12 or newer (and offers the official python.org installer if it is
 missing), then `launch.py` installs the **latest dive-sync release from GitHub** with its
-requirements into a private folder and starts it. Every start checks for a newer release; without
+requirements into a private folder and starts it; `launch.py` also updates itself from that release. Every start checks for a newer release; without
 internet it starts the version you have. The zip carries no copy of dive-sync itself. `READ ME
 FIRST.txt` in the zip explains the macOS/Windows "unidentified developer" warnings and how to
 uninstall (`python3 launch.py --uninstall`).
@@ -69,7 +69,7 @@ uninstall (`python3 launch.py --uninstall`).
 
 ```bash
 pipx install git+https://github.com/no84by/dive-sync      # latest from the repository
-# or download the .whl from the Releases page:  pipx install ./dive_sync-0.3.0-py3-none-any.whl
+# or download the .whl from the Releases page:  pipx install ./dive_sync-0.3.1-py3-none-any.whl
 dive-sync                                                  # opens the browser
 ```
 
