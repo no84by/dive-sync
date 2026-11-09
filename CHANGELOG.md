@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 09.11.2026 (experimental)
+
+- Country names SSI stores only as a name, in any language ("Espagne", "Spanien"), are shown in English.
+- Stats: "Most-dived sites" uses the SSI dive-site name (Garmin dive name as fallback) and includes
+  SSI-only dives; the monthly chart's labels no longer overlap on phones.
+- The result says how many ticked dives were already up to date.
+- Phone layout: the title keeps one line; the header buttons move below it.
+
 ## 0.2.0 — 09.11.2026 (experimental)
 
 Fixes

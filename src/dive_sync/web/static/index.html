@@ -12,7 +12,7 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
 header,main{max-width:1184px;margin:0 auto;padding-left:40px;padding-right:40px}
 header{padding-top:44px;padding-bottom:28px;display:grid;grid-template-columns:1fr auto;gap:12px 24px;border-bottom:2px solid var(--accent)}
-header h1{font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.065em;font-weight:700;margin:0;color:var(--accent)}
+header h1{white-space:nowrap;font-size:clamp(40px,6vw,68px);line-height:1;letter-spacing:-.065em;font-weight:700;margin:0;color:var(--accent)}
 header>.mute{grid-column:1/-1;font-size:14px}
 .badge{align-self:start;border-top:3px solid var(--signal);padding-top:8px;color:var(--warn);font:600 11px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 main{padding-top:24px;padding-bottom:56px}
@@ -146,7 +146,7 @@ code{font:13px var(--mono)}
 #gate p{font-size:15px;line-height:1.6}
 body:has(#gate){overflow:hidden}
 body:has(#gate) header,body:has(#gate) main{visibility:hidden}
-@media(max-width:640px){header,main{padding-left:20px;padding-right:20px}header{padding-top:28px;gap:16px}header>.mute{max-width:30ch}h2.h{font-size:23px}#steps{flex-direction:column}#steps li{border-right:0;border-bottom:1px solid var(--line)}#steps li:last-child{border-bottom:0}.toolbar{margin-left:0;width:100%}.toolbar button{flex:1}.grid{grid-template-columns:minmax(0,1fr);gap:0}.card{margin-top:28px;padding-top:20px}h3{font-size:23px}#gate{padding:12px}#gate .card{padding:24px 20px}#gate h2{font-size:28px}.row{gap:8px 16px}details .grid{gap:8px}}
+@media(max-width:640px){header,main{padding-left:20px;padding-right:20px}header{padding-top:28px;gap:16px;grid-template-columns:minmax(0,1fr)}.hdr-right{justify-self:start}header>.mute{max-width:30ch}h2.h{font-size:23px}#steps{flex-direction:column}#steps li{border-right:0;border-bottom:1px solid var(--line)}#steps li:last-child{border-bottom:0}.toolbar{margin-left:0;width:100%}.toolbar button{flex:1}.grid{grid-template-columns:minmax(0,1fr);gap:0}.card{margin-top:28px;padding-top:20px}h3{font-size:23px}#gate{padding:12px}#gate .card{padding:24px 20px}#gate h2{font-size:28px}.row{gap:8px 16px}details .grid{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .err{color:var(--bad, #b3261e);font-weight:600;margin:10px 0 0;}
 .err[hidden]{display:none}
@@ -212,7 +212,7 @@ body:has(#gate) header,body:has(#gate) main{visibility:hidden}
   <p id="dives-locked">Log in to Garmin and SSI first (step 1) — then your dives appear here.</p>
   <div id="dives-body">
   <p class="mute" style="font-size:13px">Matched dives are updated (empty fields filled; on conflicts Garmin wins). Fields SSI locks after a training center verified the dive are never changed. Matched and Garmin-only dives of the last 28 days are ticked for you; older ones are not. Unsure and merged matches are never synced. Garmin-only dives are created in SSI (numbered after your highest SSI dive).</p>
-  <div class="row" id="opts">
+  <div id="opts-all"><div class="row" id="opts">
     <label class="row" style="margin:0"><input type="checkbox" id="opt-wins" checked> Garmin wins on conflicts</label>
     <label class="row" style="margin:0"><input type="checkbox" id="opt-profile"> Include dive profile (experimental)</label>
   </div>
@@ -221,7 +221,7 @@ body:has(#gate) header,body:has(#gate) main{visibility:hidden}
       <label>SSI dive site id<input type="number" id="opt-site"></label>
       <label>SSI training center id — sends the center a verification request<input type="number" id="opt-center"></label>
     </div>
-  </details>
+  </details></div>
   <p class="mute hidden" id="filter-note">Filters are on — dives hidden by a filter are not synced, even if ticked.</p>
   <details class="group" id="grp-recent" open><summary>Last 28 days <span class="mute" id="n-recent"></span></summary>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Dives of the last 28 days"><table class="dives"><thead><tr></tr></thead><tbody id="tb-recent"></tbody></table></div>
@@ -416,7 +416,7 @@ $("#sync-now").onclick = async () => {
     const body = planBody(); if (!body) return;
     const p = await api("/api/plan", body);
     if (!p.summary.field_changes) { say($("#dives-card"), "Nothing to sync — SSI is up to date."); return; }
-    currentPlan = p;
+    currentPlan = p; p.picked = body.dives.length + body.create.length;
     await applyPlan([]);
   } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
 };
@@ -425,7 +425,7 @@ $("#make-plan").onclick = async () => {
   const btn = $("#make-plan"); busy(btn, true, "Reading Garmin Dive details…");
   try {
     const body = planBody(); if (!body) return;
-    currentPlan = await api("/api/plan", body);
+    currentPlan = await api("/api/plan", body); currentPlan.picked = body.dives.length + body.create.length;
     say($("#dives-card"), "");
     renderPlan(currentPlan);
   } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
@@ -469,8 +469,9 @@ async function applyPlan(exclude) {
   const btn = $("#apply"); busy(btn, true, "Syncing…");
   try {
     const r = await api("/api/apply", {plan_id: currentPlan.plan_id, confirm: true, exclude});
+    const upToDate = Math.max(0, (currentPlan.picked || 0) - currentPlan.items.length);
     currentPlan = null; $("#plan-card").classList.add("hidden");
-    $("#result").innerHTML = `<p>${Object.entries(r.summary).map(([k, v]) => `${esc(v)} ${esc(k)}`).join(" · ") || "Nothing sent."}</p><div class="table-scroll" tabindex="0" role="region" aria-label="Sync results"><table><thead><tr><th>Dive</th><th>Status</th><th>Details</th></tr></thead><tbody>`
+    $("#result").innerHTML = `<p>${Object.entries(r.summary).map(([k, v]) => `${esc(v)} ${esc(k)}`).join(" · ") || "Nothing sent."}${upToDate ? ` · ${esc(plural(upToDate, "ticked dive"))} already up to date` : ""}</p><div class="table-scroll" tabindex="0" role="region" aria-label="Sync results"><table><thead><tr><th>Dive</th><th>Status</th><th>Details</th></tr></thead><tbody>`
       + r.results.map(x => `<tr><td>${x.action === "create" ? "new " : ""}SSI #${esc(x.ssi_nr)} · ${esc(fdt(x.date))}</td>
         <td class="${x.status === "stored" ? "ok" : x.status === "failed" ? "bad" : "warn"}">${esc(x.status)}</td>
         <td class="mute">${x.error ? esc(x.error) : ""}${typeof x.stored === "number" ? esc(x.stored) + " of " + esc(x.sent) + " planned fields stored. " : ""}${(x.dropped_by_ssi || []).length ? "dropped by SSI: " + esc(x.dropped_by_ssi.join(", ")) : ""}${(x.stored_differently || []).length ? " stored differently: " + esc(x.stored_differently.join(", ")) : ""}</td></tr>`).join("") + "</tbody></table></div>";
@@ -490,9 +491,29 @@ const COLS = [{h: ""}, {h: "State", kind: "list"}, {h: "SSI", name: "SSI number"
 const colName = c => COLS[c].name || COLS[c].h;
 let regionNames = null;
 try { regionNames = new Intl.DisplayNames(["en"], {type: "region"}); } catch (e) { /* old browser: show the code */ }
+// SSI sometimes has only a country name, in any language ("Espagne", "Spanien"): map it back to an
+// ISO code through the browser's own localized country names, built once on first use.
+let nameToCode = null;
+const fold = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+function codeForName(name) {
+  if (!nameToCode) {
+    nameToCode = new Map();
+    const langs = ["en", "fr", "de", "es", "it", "nl", "pt", "ro", "pl", "sv", "da", "nb", "fi", "cs", "hu", "el", "tr", "hr", "sl", "sk"];
+    const A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (const lang of langs) {
+      let dn; try { dn = new Intl.DisplayNames([lang], {type: "region"}); } catch (e) { continue; }
+      for (const a of A) for (const b of A) {
+        const c = a + b; let n; try { n = dn.of(c); } catch (e) { continue; }
+        if (n && n !== c && !nameToCode.has(fold(n))) nameToCode.set(fold(n), c);
+      }
+    }
+  }
+  return nameToCode.get(fold(name));
+}
 function countryName(code, state) {
   if (!code) return state === "loading" ? "…" : "";
-  if (code.length !== 2) return code;  // SSI gives country names (or ISO-3 codes)
+  if (code.length > 3) code = codeForName(code) || code;  // a name, not a code
+  if (code.length !== 2) return code;  // ISO-3 without a known ISO-2, or an unknown name
   try { return regionNames ? regionNames.of(code) : code; } catch (e) { return code; }
 }
 const cellText = (tr, c) => (tr.children[c] ? tr.children[c].textContent.trim() : "");
@@ -636,7 +657,7 @@ function statRows() {
   return (lastDives ? lastDives.rows : []).map(r => {
     const s = r.ssi || {}, g = r.garmin || {}, date = when(r);
     return {date, depth: g.max_depth_m ?? s.max_depth_m ?? null, min: g.minutes ?? s.minutes ?? null,
-      country: r.country ? countryName(r.country) : "", site: g.name && !GENERIC.test(g.name) ? g.name : "", nr: s.nr};
+      country: r.country ? countryName(r.country) : "", site: r.site || (g.name && !GENERIC.test(g.name) ? g.name : ""), nr: s.nr};
   }).filter(r => r.date);
 }
 const plural = (n, one, many = one + "s") => `${n} ${n === 1 ? one : many}`;
@@ -654,12 +675,18 @@ function columns(data, {W = 560, H = 210, yLabel = ""} = {}) {
   const band = iw / Math.max(1, data.length), bw = Math.max(2, Math.min(36, band - 2));
   let g = ticks.map(t => { const y = T + ih - t / max * ih; return `<line class="grid-l" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/><text x="${L - 6}" y="${y + 4}" text-anchor="end">${nf(t)}</text>`; }).join("");
   const every = Math.ceil(data.length / Math.max(4, Math.floor(iw / 44)));
+  const keepYear = new Set(); let prevX = Infinity;
+  for (let i = data.length - 1; i >= 0; i--) {  // newest first: never drop the latest year
+    const x = L + i * band;
+    if (data[i].lab2 && prevX - x >= 40) { keepYear.add(i); prevX = x; }
+  }
   data.forEach((d, i) => {
     const x = L + i * band + (band - bw) / 2, h = d.v / max * ih, y = T + ih - h;
     if (d.v > 0) g += `<path class="mk" d="${vbar(x, y, bw, h)}"/>`;
     g += `<rect class="hit" x="${L + i * band}" y="${T}" width="${band}" height="${ih}" data-tip="${esc(d.tip)}"/>`;
-    if (d.lab && (i % every === 0 || d.force)) g += `<text x="${x + bw / 2}" y="${H - B + 16}" text-anchor="middle">${esc(d.lab)}</text>`;
-    if (d.lab2) g += `<text x="${x + bw / 2}" y="${H - B + 29}" text-anchor="middle" class="lbl">${esc(d.lab2)}</text>`;
+    const lastBar = i === data.length - 1, tooClose = lastBar && every > 1 && i % every !== 0 && (i % every) < every / 2;
+    if (d.lab && (i % every === 0 || d.force || lastBar) && !tooClose) g += `<text x="${x + bw / 2}" y="${H - B + 16}" text-anchor="middle">${esc(d.lab)}</text>`;
+    if (keepYear.has(i)) g += `<text x="${x + bw / 2}" y="${H - B + 29}" text-anchor="middle" class="lbl">${esc(d.lab2)}</text>`;
   });
   g += `<line class="axis" x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}"/>`;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)}">${g}</svg>`;
@@ -733,7 +760,7 @@ function drawStats() {
   // top sites
   const sites = tally(rows, r => r.site);
   const st = [...sites.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8);
-  html += `<div class="chart"><h3>Most-dived sites</h3><p class="sub">by Garmin dive name</p><table class="sites"><tbody>${st.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}×</td></tr>`).join("") || '<tr><td class="mute">No named sites yet.</td><td></td></tr>'}</tbody></table></div>`;
+  html += `<div class="chart"><h3>Most-dived sites</h3><p class="sub">SSI dive site, else the Garmin dive name</p><table class="sites"><tbody>${st.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}×</td></tr>`).join("") || '<tr><td class="mute">No named sites yet.</td><td></td></tr>'}</tbody></table></div>`;
   $("#stats-body").innerHTML = html + "</div>";
   $("#stats-src").textContent = lastDives.countries === "loading" ? "countries still loading…" : `${plural(rows.length, "dive")} from Garmin + SSI`;
 }
@@ -759,7 +786,7 @@ const TOUR = [
   {el: "#grp-recent", t: "Last 28 days", x: "Your recent dives, newest first; matched and Garmin-only ones are ticked for you. Country comes from the SSI dive site (or the nearest SSI site to the Garmin GPS) and fills in a few seconds after login. Matched = the same dive is in both logbooks. Garmin only = not in SSI yet; it will be created. Unsure = check by hand."},
   {el: "#grp-recent thead", t: "Sort and filter like Excel", x: "Click a column name to sort (again = reverse, third time = off). The ▾ button opens a filter that fits the column: Date by year or month, depth / time / SSI number by a from–to range, State, Country and Garmin name by ticking values (with search). Each list has its own. Dives hidden by a filter are not synced, even if ticked."},
   {el: "#grp-archive", t: "Archive", x: "Everything older, newest first, folded away and not ticked. Open it and tick a dive only when you want to fix or add an old one."},
-  {el: "#opts", t: "Options", x: "Garmin wins: on conflicting values Garmin's is used. Fields SSI locked after a training center verified a dive are never touched. Dive site and training center for new dives are under ‘New dives’."},
+  {el: "#opts-all", t: "Options", x: "Garmin wins: on conflicting values Garmin's is used. Fields SSI locked after a training center verified a dive are never touched. Dive site and training center for new dives are under ‘New dives’."},
   {el: "#stats-btn", t: "Statistics", x: "Your dives at a glance: totals, deepest and longest dive, dives per month, depth bands, countries, depth vs. time and your most-dived sites. Every chart can also be shown as a table. Available once you are logged in to both."},
   {el: "#plan-card", t: "Step 3 — preview, sync, check", x: "The preview lists every field old → new; untick anything you don't want, then Sync these changes. The result is read back from SSI and shows what it stored or dropped."},
 ];

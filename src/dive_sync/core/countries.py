@@ -55,6 +55,7 @@ class SiteIndex:
 
     def __init__(self, sites: list[dict]):
         self.by_id: dict[int, str] = {}
+        self.names: dict[int, str] = {}  # site id -> SSI site name
         self.grid: dict[tuple[int, int], list[tuple[float, float, str]]] = {}
         iso3_to_2, name_to_2 = _learn_codes(sites)
         for s in sites:
@@ -67,8 +68,15 @@ class SiteIndex:
             if not iso or sid is None:
                 continue
             self.by_id[sid] = iso
+            name = str(s.get("odin_dive_sites_name") or "").strip()
+            if name:
+                self.names[sid] = name
             if lat is not None and lon is not None:
                 self.grid.setdefault((math.floor(lat), math.floor(lon)), []).append((lat, lon, iso))
+
+    def site_name(self, site_id) -> str | None:
+        sid = _int(site_id)
+        return None if sid is None else self.names.get(sid)
 
     def site(self, site_id) -> str | None:
         sid = _int(site_id)

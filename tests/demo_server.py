@@ -19,12 +19,12 @@ class DemoSSI(FakeSSI):
 
     def sites(self):
         return [
-            {"odin_dive_sites_id": 2906, "iso2": "", "odin_countries_code_iso": "EGY", "odin_dive_sites_meta_country": "Egypt",
+            {"odin_dive_sites_id": 2906, "odin_dive_sites_name": "Ras Bob", "iso2": "", "odin_countries_code_iso": "EGY", "odin_dive_sites_meta_country": "Egypt",
              "odin_dive_sites_lat": 27.96, "odin_dive_sites_lon": 34.40, "odin_dive_sites_deleted": 0},
             {"odin_dive_sites_id": 1, "iso2": "EG", "odin_countries_code_iso": "EGY", "odin_dive_sites_lat": 27.0, "odin_dive_sites_lon": 33.9, "odin_dive_sites_deleted": 0},
-            {"odin_dive_sites_id": 4100, "iso2": "", "odin_countries_code_iso": "", "odin_dive_sites_meta_country": "Espagne",
+            {"odin_dive_sites_id": 4100, "odin_dive_sites_name": "El Cabrón", "iso2": "", "odin_countries_code_iso": "", "odin_dive_sites_meta_country": "Espagne",
              "odin_dive_sites_lat": 28.1, "odin_dive_sites_lon": -16.7, "odin_dive_sites_deleted": 0},
-            {"odin_dive_sites_id": 5200, "iso2": "RO", "odin_countries_code_iso": "ROU", "odin_dive_sites_lat": 44.54, "odin_dive_sites_lon": 26.07, "odin_dive_sites_deleted": 0},
+            {"odin_dive_sites_id": 5200, "odin_dive_sites_name": "Pool Otopeni", "iso2": "RO", "odin_countries_code_iso": "ROU", "odin_dive_sites_lat": 44.54, "odin_dive_sites_lon": 26.07, "odin_dive_sites_deleted": 0},
         ]
 
 

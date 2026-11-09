@@ -57,7 +57,7 @@ refuses to write and tells you (exit code 4) — it does not guess.
 
 ```bash
 pipx install git+https://github.com/no84by/dive-sync      # latest from the repository
-# or download the .whl from the Releases page:  pipx install ./dive_sync-0.2.0-py3-none-any.whl
+# or download the .whl from the Releases page:  pipx install ./dive_sync-0.2.1-py3-none-any.whl
 dive-sync                                                  # opens the browser
 ```
 

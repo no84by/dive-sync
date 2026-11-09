@@ -175,3 +175,10 @@ def test_country_by_site_and_by_gps():
     assert idx.near(27.85, 34.31) == "EG"  # ~15 km away
     assert idx.near(40.0, 40.0) is None  # nothing within 50 km
     assert idx.near(None, 1) is None
+
+
+def test_site_names():
+    from dive_sync.core.countries import SiteIndex
+
+    idx = SiteIndex([{"odin_dive_sites_id": "7", "odin_dive_sites_name": " SS Thistlegorm ", "iso2": "EG"}, {"odin_dive_sites_id": "8", "iso2": "EG"}])
+    assert idx.site_name(7) == "SS Thistlegorm" and idx.site_name("8") is None and idx.site_name(None) is None

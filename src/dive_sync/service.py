@@ -78,6 +78,12 @@ class Session:
         except Exception:  # country is a nice-to-have: never break the dive list over it
             self._countries_state = "failed"
 
+    def _site_name(self, r: dict) -> str | None:
+        if self._countries is None or not r.get("ssi"):
+            return None
+        rec = self._ssi_records.get(r["ssi"]["id"]) or {}
+        return self._countries.site_name(rec.get(fm.P + "dive_sites_id"))
+
     def _country(self, r: dict) -> str | None:
         idx = self._countries
         if idx is None:
@@ -108,6 +114,7 @@ class Session:
                     "garmin": g_view(r["garmin"]),
                     "garmin_ids": r["garmin_ids"],
                     "country": self._country(r),
+                    "site": self._site_name(r),
                 }
                 for r in rows
             ],
