@@ -1,3 +1,3 @@
 """dive-sync — experimental local Garmin → SSI dive log sync. Stores nothing."""
 
-__version__ = "0.3.1"
+__version__ = "0.2.2"

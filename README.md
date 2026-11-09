@@ -69,7 +69,7 @@ uninstall (`python3 launch.py --uninstall`).
 
 ```bash
 pipx install git+https://github.com/no84by/dive-sync      # latest from the repository
-# or download the .whl from the Releases page:  pipx install ./dive_sync-0.3.1-py3-none-any.whl
+# or download the .whl from the Releases page:  pipx install ./dive_sync-0.2.2-py3-none-any.whl
 dive-sync                                                  # opens the browser
 ```
 
