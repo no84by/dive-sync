@@ -11,6 +11,7 @@ import time
 from collections import Counter
 
 from .core import fieldmap as fm
+from .core.countries import SiteIndex
 from .core.matching import match
 from .core.model import ssi_summary
 from .core.rules import build_plan, is_empty, same
@@ -31,6 +32,8 @@ class Session:
         self._activities: dict = {}
         self.plans: dict[str, dict] = {}
         self.created: set[str] = set()  # Garmin ids this app run already created in SSI
+        self._countries: SiteIndex | None = None  # SSI site catalogue -> country, loaded in the background
+        self._countries_state = "idle"  # idle | loading | ready | failed
 
     # --- status / login -------------------------------------------------------------------------
     def status(self) -> dict:
@@ -40,6 +43,7 @@ class Session:
             "garmin": {"status": g, "name": self.garmin.name},
             "ssi": {"status": s, "name": self.ssi.email},
             "ready": g == s == "logged_in",
+            "countries": self._countries_state,
         }
 
     def logout(self, service: str) -> None:
@@ -57,12 +61,36 @@ class Session:
         with self.lock:
             self._require()
             if self._rows is None or refresh:
+                if self._countries_state == "idle":  # big catalogue: fetch alongside the logbooks
+                    self._countries_state = "loading"
+                    threading.Thread(target=self._load_countries, daemon=True).start()
                 records = self.ssi.logbook()
                 self._ssi_records = {r["odin_user_log_id"]: r for r in records}
                 gd = self.garmin.dives()
                 self._activities = {g["id"]: g.pop("_activity") for g in gd}
                 self._rows = match(gd, [ssi_summary(r) for r in records])
             return self._rows
+
+    def _load_countries(self) -> None:
+        try:
+            self._countries = SiteIndex(self.ssi.sites())
+            self._countries_state = "ready"
+        except Exception:  # country is a nice-to-have: never break the dive list over it
+            self._countries_state = "failed"
+
+    def _country(self, r: dict) -> str | None:
+        idx = self._countries
+        if idx is None:
+            return None
+        if r.get("ssi"):
+            rec = self._ssi_records.get(r["ssi"]["id"]) or {}
+            c = idx.site(rec.get(fm.P + "dive_sites_id"))
+            if c:
+                return c
+        if r.get("garmin"):
+            a = self._activities.get(r["garmin"]["id"]) or {}
+            return idx.near(a.get("startLatitude"), a.get("startLongitude"))
+        return None
 
     def dives(self, refresh: bool = False) -> dict:
         rows = self.load(refresh)
@@ -74,9 +102,16 @@ class Session:
         return {
             "counts": counts,
             "rows": [
-                {"state": r["state"], "ssi": r["ssi"], "garmin": g_view(r["garmin"]), "garmin_ids": r["garmin_ids"]}
+                {
+                    "state": r["state"],
+                    "ssi": r["ssi"],
+                    "garmin": g_view(r["garmin"]),
+                    "garmin_ids": r["garmin_ids"],
+                    "country": self._country(r),
+                }
                 for r in rows
             ],
+            "countries": self._countries_state,
         }
 
     # --- plan / apply ---------------------------------------------------------------------------

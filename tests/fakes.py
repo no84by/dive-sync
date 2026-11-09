@@ -113,6 +113,9 @@ class FakeSSI:
         self.records[rec[P + "id"]] = rec
         return {"success": True}
 
+    def sites(self):
+        return []
+
     def logout(self):
         self.logged_in = False
         self.email = None
@@ -147,7 +150,7 @@ class FakeGarmin:
         from dive_sync.errors import LoginFailed
 
         if not email or not password or password == "wrong":
-            raise LoginFailed("Garmin login failed: Authentication failed (401 Unauthorized).")
+            raise LoginFailed("Garmin login failed: wrong e-mail or password")
         if "mfa" in email:
             self.needs_mfa = True
             return "needs_mfa"

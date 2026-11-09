@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dive-sync"
-version = "0.1.0"
+version = "0.2.0"
 description = "Experimental local tool to sync dive logs between Garmin (Connect/Dive) and the SSI logbook. Runs only on your computer, stores nothing, not endorsed by Garmin or SSI."
 readme = "README.md"
 license = "MIT"

@@ -67,7 +67,10 @@ class GarminClient:
             status, state = api.login(None)
         except Exception as e:  # library errors carry no secrets, but keep the message short
             api.password = None
-            raise LoginFailed(f"Garmin login failed: {str(e).splitlines()[0][:200]}") from None
+            first = str(e).splitlines()[0][:200] if str(e) else type(e).__name__
+            if "401" in first or "Unauthorized" in first:
+                first = "wrong e-mail or password"
+            raise LoginFailed(f"Garmin login failed: {first}") from None
         if status == "needs_mfa":
             self._pending = (api, state)
             return "needs_mfa"
@@ -99,14 +102,14 @@ class GarminClient:
         self.name = None
         self._cache.clear()
 
-    def _get(self, path: str) -> Any:
+    def _get(self, path: str, params: dict | None = None) -> Any:
+        """GET a Connect API path; query strings go in `params` (garminconnect rejects '?' in the path)."""
         if not self._api:
             raise NotLoggedIn("Not logged in to Garmin")
         try:
-            r = self._api.client._run_request("GET", path)
+            return self._api.connectapi(path, params=params)
         except Exception as e:
             raise _map_error(e, "dive detail") from None
-        return r.json() if hasattr(r, "json") else r
 
     def activities(self) -> list[dict]:
         """All dive activities (Garmin Connect), newest first."""
@@ -136,7 +139,7 @@ class GarminClient:
             dive = self._get(f"/diving/v1/dive/detail/by/connectid/{cid}")
             if not isinstance(dive, dict) or "id" not in dive:
                 raise VendorChanged("Garmin Dive detail has no 'id'")
-            tanks = self._get(f"/diving/v1/dive/detail/tanksensor?connectActivityId={cid}")
+            tanks = self._get("/diving/v1/dive/detail/tanksensor", {"connectActivityId": cid})
             record = self._get(f"/diving/v1/dive/detail/{dive['id']}/record") if with_record else None
             self._cache[key] = garmin_dive(activity, dive, tanks if isinstance(tanks, dict) else {}, record)
         return self._cache[key]

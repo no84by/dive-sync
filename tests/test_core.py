@@ -153,3 +153,25 @@ def test_model_tank_sensor_with_null_name_and_index():
     tanks = {"tankSensors": [{"name": None, "tankIndex": None, "startingPressure": 200, "endingPressure": 50}]}
     g = garmin_dive(g_activity("1", "2026-01-02 10:00", 5, 5), None, tanks)
     assert g["tanks"][0]["name"] == "T1" and g["tanks"][0]["start_bar"] == 200
+
+
+def test_country_by_site_and_by_gps():
+    from dive_sync.core.countries import SiteIndex
+
+    idx = SiteIndex([
+        {"odin_dive_sites_id": "2906", "odin_dive_sites_meta_country": "Egypt", "odin_countries_code_iso": "EGY", "odin_dive_sites_lat": "27.96", "odin_dive_sites_lon": "34.40"},
+        {"odin_dive_sites_id": "533765", "iso2": "", "odin_countries_code_iso": "rou", "odin_dive_sites_lat": "44.57", "odin_dive_sites_lon": "26.07"},
+        {"odin_dive_sites_id": "11", "iso2": "EG", "odin_countries_code_iso": "EGY", "odin_dive_sites_lat": "60", "odin_dive_sites_lon": "60"},
+        {"odin_dive_sites_id": "12", "odin_dive_sites_meta_country": "Espagne", "odin_dive_sites_lat": "61", "odin_dive_sites_lon": "61"},
+        {"odin_dive_sites_id": "13", "odin_dive_sites_meta_country": "Espagne", "iso2": "ES", "odin_dive_sites_lat": "62", "odin_dive_sites_lon": "62"},
+        {"odin_dive_sites_id": "14", "odin_dive_sites_meta_country": "Atlantis", "odin_dive_sites_lat": "63", "odin_dive_sites_lon": "63"},
+        {"odin_dive_sites_id": "9", "iso2": "XX1", "odin_dive_sites_lat": "0", "odin_dive_sites_lon": "0"},
+        {"odin_dive_sites_id": "10", "iso2": "DE", "odin_dive_sites_deleted": "1", "odin_dive_sites_lat": "1", "odin_dive_sites_lon": "1"},
+    ])
+    assert idx.site(2906) == "EG" and idx.site("533765") == "ROU"  # EGY learned from site 11; ROU unmapped
+    assert idx.site(12) == "ES"  # name only, learned from site 13
+    assert idx.site(14) == "Atlantis"  # nothing to learn from: SSI's own spelling
+    assert idx.site(9) is None and idx.site(10) is None and idx.site(None) is None
+    assert idx.near(27.85, 34.31) == "EG"  # ~15 km away
+    assert idx.near(40.0, 40.0) is None  # nothing within 50 km
+    assert idx.near(None, 1) is None

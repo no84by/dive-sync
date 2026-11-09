@@ -17,7 +17,7 @@ header>.mute{grid-column:1/-1;font-size:14px}
 .badge{align-self:start;border-top:3px solid var(--signal);padding-top:8px;color:var(--warn);font:600 11px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 main{padding-top:24px;padding-bottom:56px}
 h2,h3,h4{line-height:1.2;color:var(--accent);letter-spacing:-.025em}
-h2{font-size:32px}h3{font-size:26px}h4{font-size:18px;margin:32px 0 12px}
+h2{font-size:32px}h3,h2.h{font-size:26px}h4,h3.item{font-size:18px;margin:32px 0 12px}
 p{max-width:85ch}
 .notice{border-left:3px solid var(--signal);padding:0 0 0 16px;font-size:13px;color:var(--mute);max-width:90ch}
 .notice b{color:var(--ink)}
@@ -25,28 +25,31 @@ p{max-width:85ch}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;min-width:0}
 .section-label{display:block;font:12px/1.5 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:12px}
 .st{font-size:13px;margin:8px 0 24px;overflow-wrap:anywhere}
+.card-head{display:flex;align-items:baseline;gap:6px 16px;flex-wrap:wrap}
+.card-head .st{margin:0;flex:1;min-width:140px}
+.card-head .logout{margin:0 0 0 auto;min-height:36px;padding:6px 14px;font-size:13px;align-self:center}
+.card-head+form{margin-top:8px}
 label{display:block;font-size:13px;color:var(--mute);margin-top:16px}
 input[type=email],input[type=password],input[type=text],input[type=number]{display:block;width:100%;min-height:48px;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-bottom-color:var(--mute);border-radius:0;background:var(--card);color:var(--ink);font:inherit;font-size:16px}
 input[type=number],input[name=code]{font-family:var(--mono);font-variant-numeric:tabular-nums}
 button{font:600 14px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;min-height:44px;max-width:100%;padding:11px 20px;border-radius:0;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;margin-top:16px;overflow-wrap:anywhere}
 button:hover:not(:disabled){background:var(--accent);color:var(--bg)}
-#understand,#make-plan,#apply{background:var(--signal);border-color:var(--signal);color:var(--bg)}
-#understand:hover,#make-plan:hover,#apply:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
-body:has(#plan-card:not(.hidden)) #make-plan{background:transparent;border-color:var(--accent);color:var(--accent)}
-button:disabled,#apply:disabled,#make-plan:disabled{background:var(--wash);border-color:var(--line);color:var(--mute);cursor:not-allowed}
+#understand,#sync-now,#apply{background:var(--signal);border-color:var(--signal);color:var(--bg)}
+#understand:hover,#sync-now:hover,#apply:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+button:disabled,#apply:disabled,#sync-now:disabled{background:var(--wash);border-color:var(--line);color:var(--mute);cursor:not-allowed}
 :focus-visible{outline:3px solid var(--accent);outline-offset:4px}
 input[type=checkbox]{width:20px;height:20px;flex:none;margin:0;accent-color:var(--accent);cursor:pointer}
 label.row{min-height:44px;padding:8px 12px 8px 0;color:var(--ink)}
 .selection{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;margin:0;cursor:pointer}
 .table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;margin-top:16px}
 table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
-#dives{min-width:850px}
+.dives{min-width:960px}
 table.plan{table-layout:fixed;min-width:720px}
 #result table{min-width:580px}
 th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
 th{font:600 11px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);border-top:1px solid var(--line);border-bottom:2px solid var(--accent)}
 td{font-family:var(--mono)}
-#dives td:nth-child(2),#dives td:nth-child(7),.plan td:nth-child(2),.plan td:last-child,#result td{font-family:inherit}
+.dives td:nth-child(2),.dives td:nth-child(5),.dives td:nth-child(8),.plan td:nth-child(2),.plan td:last-child,#result td{font-family:inherit}
 td:has(.selection){padding:2px 0;width:44px}
 tbody tr:hover{background:var(--wash)}
 .state{font-size:12px;border-left:2px solid currentColor;padding-left:8px;white-space:nowrap}
@@ -54,10 +57,87 @@ tbody tr:hover{background:var(--wash)}
 .mute{color:var(--mute)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}
 .row{display:flex;gap:12px 24px;align-items:center;flex-wrap:wrap;min-width:0}
 #counts{font:12px/1.6 var(--mono);flex:1;min-width:180px}
-#reload{margin-top:0}
+#reload,#make-plan{margin-top:0}
+#sync-now{margin-top:0;min-width:132px}
+.hdr-right{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:flex-start;justify-self:end}
+#help-btn,#stats-btn{margin:0;min-height:36px;padding:6px 14px;font-size:13px}
+.hdr-right .badge{margin-right:4px}
+#stats{position:fixed;inset:0;z-index:12;background:var(--bg);overflow-y:auto}
+#stats .in{max-width:1184px;margin:0 auto;padding:32px 40px 56px}
+#stats .top{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--accent);padding-bottom:16px}
+#stats .top h2{margin:0;flex:1}#stats .top button{margin:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:24px}
+.tile{background:var(--card);padding:16px 18px}
+.tile .k{font:11px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.tile .v{font-size:34px;font-weight:700;letter-spacing:-.04em;color:var(--accent);line-height:1.15;margin-top:6px;font-variant-numeric:tabular-nums}
+.tile .v small{font-size:15px;font-weight:600;color:var(--mute);margin-left:3px;letter-spacing:0}
+.tile .s{font-size:12px;color:var(--mute);margin-top:4px;overflow-wrap:anywhere}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px 40px;margin-top:32px}
+.chart{min-width:0}.chart.wide{grid-column:1/-1}
+.chart h3{margin:0 0 2px;font-size:16px}.chart .sub{font-size:12px;color:var(--mute);margin:0 0 10px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .grid-l{stroke:var(--line);stroke-width:1;opacity:.55}
+.chart .axis{stroke:var(--mute);stroke-width:1}
+.chart text{fill:var(--mute);font:11px var(--mono)}
+.chart text.lbl{fill:var(--ink);font:12px "Helvetica Neue",Helvetica,Arial,sans-serif}
+.chart text.val{fill:var(--ink);font:600 11px var(--mono)}
+.mk{fill:var(--accent)}.mk:hover{fill:var(--signal)}
+.dot{fill:var(--accent);stroke:var(--card);stroke-width:2}.dot:hover{fill:var(--signal)}
+.hit{fill:transparent;cursor:default}
+#tip{position:fixed;z-index:30;pointer-events:none;background:var(--ink);color:var(--bg);font:12px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;padding:6px 9px;max-width:260px;white-space:pre-line}
+.sites{width:100%;border-collapse:collapse;font-size:13px}
+details.tbl{margin-top:8px}details.tbl[open]{border-bottom:0;padding-bottom:0}details.tbl summary{min-height:32px;padding:6px 0;font-size:12px;color:var(--mute)}.sites td{padding:8px 6px;border-bottom:1px solid var(--line);font-family:inherit}
+.sites td:last-child{text-align:right;font-family:var(--mono)}
+@media(max-width:760px){.charts{grid-template-columns:minmax(0,1fr)}#stats .in{padding:20px 16px 40px}}
+#steps{list-style:none;display:flex;gap:0;margin:28px 0 0;padding:0;counter-reset:st;border:1px solid var(--line)}
+#steps li{flex:1;counter-increment:st;padding:12px 16px;font-size:13px;color:var(--mute);border-right:1px solid var(--line);min-width:0}
+#steps li:last-child{border-right:0}
+#steps li::before{content:counter(st);display:inline-grid;place-items:center;width:22px;height:22px;margin-right:10px;border:1px solid currentColor;font:600 12px var(--mono)}
+#steps li.current{color:var(--ink);background:var(--wash);box-shadow:inset 0 -3px 0 var(--signal)}
+#steps li.current::before{background:var(--signal);border-color:var(--signal);color:var(--bg)}
+#steps li.done{color:var(--ok)}#steps li.done::before{content:"✓"}
+#steps small{display:block;margin-left:32px;font-size:12px;color:var(--mute)}
+.toolbar{margin-left:auto;display:flex;gap:12px;flex-wrap:wrap}
+.toolbar button{margin-top:0}
+.toolbar button,.hdr-right button,#stats-close,.card-head .logout{overflow-wrap:normal;white-space:nowrap}
+#dives-locked{border:1px dashed var(--line);padding:20px;color:var(--mute);font-size:14px;margin-top:16px}
+body.ready #dives-locked,body:not(.ready) #dives-body{display:none}
+details.group{border-top:1px solid var(--line);margin-top:16px}
+details.group[open]{border-bottom:0;padding-bottom:0}
+details.group>summary{font:600 15px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--accent);padding:14px 0;list-style:none;display:flex;gap:12px;align-items:center}
+details.group>summary::-webkit-details-marker{display:none}
+details.group>summary::before{content:"▸";font-size:12px;transition:transform .15s}
+details.group[open]>summary::before{transform:rotate(90deg)}
+details.group>summary .mute{font:12px var(--mono)}
+.th-in{display:flex;align-items:center;gap:4px;white-space:nowrap}
+.th-sort{all:unset;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;padding:4px 0}
+.th-in .th-sort:hover:not(:disabled){background:none;color:inherit}
+.th-sort:focus-visible,.th-filt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.th-sort[data-dir=asc]::after{content:" ▲";color:var(--accent)}.th-sort[data-dir=desc]::after{content:" ▼";color:var(--accent)}
+.th-filt{all:unset;cursor:pointer;display:inline-grid;place-items:center;width:22px;height:22px;border:1px solid var(--line);font-size:10px;color:var(--mute)}
+.th-filt:hover{border-color:var(--accent);color:var(--accent)}
+.th-filt.on{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+#fpop{position:fixed;max-height:calc(100vh - 16px);overflow-y:auto;z-index:15;width:260px;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);padding:12px;box-shadow:0 10px 28px rgba(0,0,0,.3);font-size:13px}
+#fpop button{margin:0;min-height:32px;padding:4px 10px;font-size:12px}
+#fpop .srt{display:flex;flex-direction:column;gap:4px;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:8px}
+#fpop .srt button{text-align:left;border:0;padding:6px 4px}
+#fpop input[type=text]{min-height:36px;margin:0 0 8px;font-size:14px}
+#fpop .vals{max-height:220px;overflow-y:auto;border:1px solid var(--line);padding:4px 8px}
+#fpop .vals label{display:flex;gap:8px;align-items:center;margin:0;padding:4px 0;color:var(--ink);font-size:13px;cursor:pointer}
+#fpop .vals input{width:16px;height:16px}
+#fpop .foot{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+#fpop .n{color:var(--mute);font:11px var(--mono);margin-left:auto}
+#filter-note{font-size:12px}
+#tour{position:fixed;inset:0;z-index:20;pointer-events:none}
+#tour-ring{position:fixed;border:3px solid var(--signal);box-shadow:0 0 0 9999px rgba(10,14,20,.62);transition:all .2s;pointer-events:none}
+#tour-pop{position:fixed;width:min(360px,calc(100vw - 32px));background:var(--card);border:1px solid var(--line);border-top:4px solid var(--signal);padding:20px;pointer-events:auto;box-shadow:0 12px 32px rgba(0,0,0,.3)}
+#tour-pop h2.tt{margin:0 0 8px;font-size:18px}#tour-pop p{font-size:14px;margin:0}
+#tour-pop .row{margin-top:16px;justify-content:space-between}#tour-pop button{margin:0;min-height:36px;padding:6px 14px}
+#tour-count{font:12px var(--mono);color:var(--mute)}
 summary{cursor:pointer;min-height:44px;padding:12px 0;font-size:13px}
 details[open]{border-bottom:1px solid var(--line);padding-bottom:20px}
 .hidden{display:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .lock::before{content:"[locked] ";font:11px var(--mono);color:var(--mute)}
 .verified{width:14px;height:14px;vertical-align:-2px;fill:none;stroke:currentColor;stroke-width:1.8}
 code{font:13px var(--mono)}
@@ -66,7 +146,7 @@ code{font:13px var(--mono)}
 #gate p{font-size:15px;line-height:1.6}
 body:has(#gate){overflow:hidden}
 body:has(#gate) header,body:has(#gate) main{visibility:hidden}
-@media(max-width:640px){header,main{padding-left:20px;padding-right:20px}header{padding-top:28px;gap:16px}header>.mute{max-width:30ch}.grid{grid-template-columns:minmax(0,1fr);gap:0}.card{margin-top:28px;padding-top:20px}h3{font-size:23px}#gate{padding:12px}#gate .card{padding:24px 20px}#gate h2{font-size:28px}.row{gap:8px 16px}details .grid{gap:8px}}
+@media(max-width:640px){header,main{padding-left:20px;padding-right:20px}header{padding-top:28px;gap:16px}header>.mute{max-width:30ch}h2.h{font-size:23px}#steps{flex-direction:column}#steps li{border-right:0;border-bottom:1px solid var(--line)}#steps li:last-child{border-bottom:0}.toolbar{margin-left:0;width:100%}.toolbar button{flex:1}.grid{grid-template-columns:minmax(0,1fr);gap:0}.card{margin-top:28px;padding-top:20px}h3{font-size:23px}#gate{padding:12px}#gate .card{padding:24px 20px}#gate h2{font-size:28px}.row{gap:8px 16px}details .grid{gap:8px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .err{color:var(--bad, #b3261e);font-weight:600;margin:10px 0 0;}
 .err[hidden]{display:none}
@@ -82,19 +162,23 @@ body:has(#gate) header,body:has(#gate) main{visibility:hidden}
   <button id="understand">I understand</button>
 </div></div>
 
-<header><h1>dive-sync</h1><span class="badge">experimental</span><span class="mute">Garmin → SSI logbook · runs on this computer · stores nothing</span></header>
+<header><h1>dive-sync</h1><div class="hdr-right"><span class="badge">experimental</span><button id="stats-btn" class="secondary" aria-haspopup="dialog" disabled title="Log in first">Stats</button><button id="help-btn" class="secondary" aria-haspopup="dialog">? Help / tour</button></div><span class="mute">Garmin → SSI logbook · runs on this computer · stores nothing</span></header>
 <main>
 <div class="notice"><b>Not affiliated with or endorsed by Garmin or SSI.</b> Unofficial interfaces, may break at any time. Nothing is saved; closing the app forgets everything. No warranty (MIT).</div>
 
+<ol id="steps" aria-label="Progress">
+  <li data-step="1">Log in<span class="sr"></span><small>Garmin and SSI</small></li>
+  <li data-step="2">Review dives<span class="sr"></span><small>tick what to sync</small></li>
+  <li data-step="3">Sync &amp; check<span class="sr"></span><small>result read back from SSI</small></li>
+</ol>
 <p class="err" id="global-err" role="alert" aria-live="assertive" hidden></p>
-<section class="grid">
+<section class="grid" id="login-grid">
   <div class="card" id="box-garmin">
-    <span class="section-label">01 / Source logbook</span>
-    <h3 style="margin:0">Garmin</h3>
-    <div class="st mute">Not logged in</div>
+    <span class="section-label">Step 1a / Source logbook</span>
+    <div class="card-head"><h2 class="h" style="margin:0">Garmin</h2><div class="st mute">Not logged in</div><button class="secondary logout hidden" data-svc="garmin" aria-label="Log out of Garmin">Log out</button></div>
     <form class="login" data-svc="garmin" autocomplete="off" novalidate>
-      <label>Email<input type="email" name="email" required autocomplete="username"></label>
-      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <label>Email<input type="email" name="email" aria-label="Garmin email" required autocomplete="username"></label>
+      <label>Password<input type="password" name="password" aria-label="Garmin password" required autocomplete="current-password"></label>
       <button type="submit">Log in to Garmin</button>
       <p class="err" role="alert" aria-live="assertive" hidden></p>
     </form>
@@ -103,57 +187,77 @@ body:has(#gate) header,body:has(#gate) main{visibility:hidden}
       <button type="submit">Confirm code</button>
       <p class="err" role="alert" aria-live="assertive" hidden></p>
     </form>
-    <button class="secondary logout hidden" data-svc="garmin">Log out</button>
   </div>
   <div class="card" id="box-ssi">
-    <span class="section-label">02 / Destination logbook</span>
-    <h3 style="margin:0">SSI (MySSI)</h3>
-    <div class="st mute">Not logged in</div>
+    <span class="section-label">Step 1b / Destination logbook</span>
+    <div class="card-head"><h2 class="h" style="margin:0">SSI (MySSI)</h2><div class="st mute">Not logged in</div><button class="secondary logout hidden" data-svc="ssi" aria-label="Log out of SSI">Log out</button></div>
     <form class="login" data-svc="ssi" autocomplete="off" novalidate>
-      <label>Email<input type="email" name="email" required autocomplete="username"></label>
-      <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+      <label>Email<input type="email" name="email" aria-label="SSI email" required autocomplete="username"></label>
+      <label>Password<input type="password" name="password" aria-label="SSI password" required autocomplete="current-password"></label>
       <button type="submit">Log in to SSI</button>
       <p class="err" role="alert" aria-live="assertive" hidden></p>
       <div class="mute" style="font-size:12px;margin-top:6px">Signed up with Google/Facebook? Set an SSI password first (“Lost password” on MySSI).</div>
     </form>
-    <button class="secondary logout hidden" data-svc="ssi">Log out</button>
   </div>
 </section>
 
-<section class="card hidden" id="dives-card">
-  <span class="section-label">03 / Reconcile</span>
-  <div class="row"><h3 style="margin:0">Dives</h3><span id="counts" class="mute"></span>
-    <button class="secondary" id="reload">Reload</button></div>
-  <p class="mute" style="font-size:13px">Matched dives are updated (empty fields filled; on conflicts Garmin wins). Fields SSI locks after a training center verified the dive are never changed. Tick Garmin-only dives to create them in SSI (they are numbered after your highest SSI dive).</p>
-  <div class="row">
+<section class="card" id="dives-card">
+  <span class="section-label">Step 2 / Review dives</span>
+  <div class="row"><h2 class="h" style="margin:0">Dives</h2><span id="counts" class="mute"></span>
+    <div class="toolbar" id="toolbar">
+      <button class="secondary" id="reload" disabled>Reload</button>
+      <button class="secondary" id="make-plan" disabled>Preview changes</button>
+      <button id="sync-now" disabled title="Syncs the ticked dives (the last 28 days by default) in one click — no preview">Sync now</button>
+    </div></div>
+  <p id="dives-locked">Log in to Garmin and SSI first (step 1) — then your dives appear here.</p>
+  <div id="dives-body">
+  <p class="mute" style="font-size:13px">Matched dives are updated (empty fields filled; on conflicts Garmin wins). Fields SSI locks after a training center verified the dive are never changed. Matched and Garmin-only dives of the last 28 days are ticked for you; older ones are not. Unsure and merged matches are never synced. Garmin-only dives are created in SSI (numbered after your highest SSI dive).</p>
+  <div class="row" id="opts">
     <label class="row" style="margin:0"><input type="checkbox" id="opt-wins" checked> Garmin wins on conflicts</label>
     <label class="row" style="margin:0"><input type="checkbox" id="opt-profile"> Include dive profile (experimental)</label>
   </div>
-  <details style="margin-top:8px"><summary class="mute">New dives: dive site / training center (optional)</summary>
+  <details style="margin-top:8px" id="opt-new"><summary class="mute">New dives: dive site / training center (optional)</summary>
     <div class="grid">
       <label>SSI dive site id<input type="number" id="opt-site"></label>
       <label>SSI training center id — sends the center a verification request<input type="number" id="opt-center"></label>
     </div>
   </details>
-  <div class="table-scroll" tabindex="0" role="region" aria-label="Dive comparison"><table id="dives"><thead><tr>
-    <th></th><th>State</th><th>SSI</th><th>Date</th><th>Depth</th><th>Time</th><th>Garmin</th><th>Depth</th><th>Time</th></tr></thead><tbody></tbody></table></div>
-  <button id="make-plan">Preview changes</button>
+  <p class="mute hidden" id="filter-note">Filters are on — dives hidden by a filter are not synced, even if ticked.</p>
+  <details class="group" id="grp-recent" open><summary>Last 28 days <span class="mute" id="n-recent"></span></summary>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Dives of the last 28 days"><table class="dives"><thead><tr></tr></thead><tbody id="tb-recent"></tbody></table></div>
+  </details>
+  <details class="group" id="grp-archive"><summary>Archive <span class="mute" id="n-archive"></span></summary>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Older dives"><table class="dives"><thead><tr></tr></thead><tbody id="tb-archive"></tbody></table></div>
+  </details>
+  </div>
   <p class="err" role="alert" aria-live="assertive" hidden></p>
 </section>
 
 <section class="card hidden" id="plan-card">
-  <h3 style="margin-top:0">Preview — nothing has been sent yet</h3>
+  <span class="section-label">Step 3 / Preview</span>
+  <h2 class="h" style="margin-top:0">Preview — nothing has been sent yet</h2>
   <div id="plan"></div>
   <div class="row"><button id="apply">Sync these changes</button><button class="secondary" id="cancel">Back</button></div>
   <p class="err" role="alert" aria-live="assertive" hidden></p>
 </section>
 
 <section class="card hidden" id="result-card">
-  <h3 style="margin-top:0">Result (read back from SSI)</h3>
+  <span class="section-label">Step 3 / Result</span>
+  <h2 class="h" style="margin-top:0">Result (read back from SSI)</h2>
   <div id="result"></div>
 </section>
 <p class="mute" style="font-size:12px;margin-top:24px">“Garmin”, “Garmin Connect”, “Garmin Dive” and “Descent” are trademarks of Garmin Ltd. “SSI” and “MySSI” are trademarks of Scuba Schools International. Used only to describe compatibility.</p>
 </main>
+<div id="stats" hidden role="dialog" aria-modal="true" aria-labelledby="stats-title"><div class="in">
+  <div class="top"><h2 id="stats-title">Your dive statistics</h2><span class="mute" id="stats-src" style="font-size:12px"></span><button class="secondary" id="stats-close">Close</button></div>
+  <div id="stats-body"></div>
+</div></div>
+<div id="tip" hidden></div>
+<div id="fpop" hidden role="dialog" aria-label="Sort and filter"></div>
+<div id="tour" hidden role="dialog" aria-modal="false" aria-labelledby="tour-title"><div id="tour-ring"></div>
+  <div id="tour-pop"><h2 id="tour-title" class="tt"></h2><p id="tour-text"></p>
+    <div class="row"><span id="tour-count"></span><span class="row" style="gap:8px">
+      <button class="secondary" id="tour-back">Back</button><button class="secondary" id="tour-next">Next</button><button class="secondary" id="tour-close" aria-label="Close tour">✕</button></span></div></div></div>
 <script>
 "use strict";
 const KEY = (() => {
@@ -179,6 +283,29 @@ function busy(btn, on, text) { if (!btn) return; btn.disabled = on; if (on) { bt
 
 $("#understand").onclick = () => $("#gate").remove();
 
+function setStep() {
+  const shown = id => !$(id).classList.contains("hidden");
+  // 4 = result shown: every step done
+  const cur = !document.body.classList.contains("ready") ? 1 : shown("#result-card") ? 4 : shown("#plan-card") ? 3 : 2;
+  document.querySelectorAll("#steps li").forEach(li => {
+    const n = +li.dataset.step;
+    li.classList.toggle("done", n < cur);
+    li.classList.toggle("current", n === cur);
+    if (n === cur) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
+    $(".sr", li).textContent = n < cur ? " (done)" : n === cur ? " (current step)" : "";
+  });
+}
+// logged out of either side: nothing loaded from the logbooks may stay on the page
+function forgetDives() {
+  lastDives = null; currentPlan = null;
+  $("#stats-btn").disabled = true; $("#stats-btn").title = "Log in first";
+  if (!$("#stats").hidden) closeStats();
+  $("#counts").textContent = "";
+  ["#tb-recent", "#tb-archive"].forEach(t => $(t).innerHTML = "");
+  ["#n-recent", "#n-archive"].forEach(t => $(t).textContent = "");
+  $("#plan").innerHTML = ""; $("#result").innerHTML = "";
+  $("#plan-card").classList.add("hidden"); $("#result-card").classList.add("hidden");
+}
 async function refreshStatus() {
   const s = await api("/api/status");
   for (const svc of ["garmin", "ssi"]) {
@@ -186,10 +313,16 @@ async function refreshStatus() {
     $(".st", box).innerHTML = st.status === "logged_in" ? `<span class="ok">Logged in</span> as ${esc(st.name)}`
       : st.status === "needs_mfa" ? `<span class="warn">Waiting for the code</span>` : "Not logged in";
     $(".login", box).classList.toggle("hidden", st.status !== "logged_out");
-    $(".logout", box).classList.toggle("hidden", st.status === "logged_out");
+    const out = $(".logout", box);
+    out.classList.toggle("hidden", st.status === "logged_out");
+    out.textContent = st.status === "needs_mfa" ? "Cancel" : "Log out";
+    out.setAttribute("aria-label", `${out.textContent === "Cancel" ? "Cancel the Garmin code" : "Log out of " + (svc === "garmin" ? "Garmin" : "SSI")}`);
     const mfa = $(".mfa", box); if (mfa) mfa.classList.toggle("hidden", st.status !== "needs_mfa");
   }
-  $("#dives-card").classList.toggle("hidden", !s.ready);
+  document.body.classList.toggle("ready", s.ready);
+  ["#reload", "#make-plan", "#sync-now"].forEach(b => $(b).disabled = !s.ready);
+  if (!s.ready) forgetDives();
+  setStep();
   return s;
 }
 
@@ -217,37 +350,81 @@ document.querySelectorAll("button.logout").forEach(b => b.onclick = async () => 
   try { await api("/api/logout/" + b.dataset.svc, {}); await refreshStatus(); } catch (err) { say($("#global-err"), err.message); }
 });
 
+const when = r => (r.ssi && r.ssi.start_local) || (r.garmin && r.garmin.start_local) || "";
+const tally = (xs, key) => { const m = new Map(); xs.forEach(x => { const k = key(x); if (k) m.set(k, (m.get(k) || 0) + 1); }); return m; };
 const STATE = {matched: "matched", merged: "merged session", ambiguous: "unsure", ssi_only: "SSI only", garmin_only: "Garmin only"};
 async function loadDives(refresh) {
   const btn = $("#reload"); busy(btn, true, "Loading…");
   try {
     const d = await api("/api/dives" + (refresh ? "?refresh=1" : ""));
+    lastDives = d; $("#stats-btn").disabled = false; $("#stats-btn").title = "";
+    if (!$("#stats").hidden) renderStats();
     $("#counts").textContent = Object.entries(d.counts).map(([k, v]) => `${v} ${STATE[k] || k}`).join(" · ");
-    $("#dives tbody").innerHTML = d.rows.map(r => {
+    const cutoff = new Date(Date.now() - 28 * 864e5).toISOString().slice(0, 10);
+    const rows = [...d.rows].sort((a, b) => when(b).localeCompare(when(a)));  // newest first
+    const recent = rows.filter(r => when(r) >= cutoff), archive = rows.filter(r => when(r) < cutoff);
+    const html = (rows, pick) => rows.map(r => {
       const s = r.ssi || {}, g = r.garmin || {};
-      const tick = r.state === "matched" ? `<label class="selection"><input aria-label="Select SSI dive ${esc(s.nr)} for update" type="checkbox" class="pick-upd" value="${esc(s.id)}" checked></label>`
-        : r.state === "garmin_only" ? `<label class="selection"><input aria-label="Create SSI dive from Garmin ${esc(g.id)}" type="checkbox" class="pick-new" value="${esc(g.id)}"></label>` : "";
-      return `<tr><td>${tick}</td><td><span class="state s-${esc(r.state)}">${esc(STATE[r.state])}</span></td>
+      const tick = r.state === "matched" ? `<label class="selection"><input aria-label="Select SSI dive ${esc(s.nr)} for update" type="checkbox" class="pick-upd" value="${esc(s.id)}"${pick ? " checked" : ""}></label>`
+        : r.state === "garmin_only" ? `<label class="selection"><input aria-label="Create SSI dive from Garmin ${esc(g.id)}" type="checkbox" class="pick-new" value="${esc(g.id)}"${pick ? " checked" : ""}></label>` : "";
+      return `<tr data-date="${esc(when(r))}"><td>${tick}</td><td><span class="state s-${esc(r.state)}">${esc(STATE[r.state])}</span></td>
         <td>${s.nr ? "#" + esc(s.nr) + (s.verified ? ' <svg class="verified" viewBox="0 0 16 16" role="img" aria-label="verified by a training center"><title>verified by a training center</title><path d="M2 8l4 4 8-9"/></svg>' : "") : ""}</td>
-        <td>${esc((s.start_local || g.start_local || "").replace(/^(\d+)-(\d+)-(\d+)/, "$3.$2.$1"))}</td>
+        <td>${esc(fdt(when(r)))}</td>
+        <td${r.country ? ` title="${esc(r.country)}"` : ""}>${esc(countryName(r.country, d.countries))}</td>
         <td>${esc(s.max_depth_m ?? "")}</td><td>${esc(s.minutes ?? "")}</td>
         <td>${g.id ? esc(g.name || "#" + (g.number ?? "")) : r.garmin_ids.length > 1 ? esc(r.garmin_ids.length) + " Garmin dives" : ""}</td>
         <td>${esc(g.max_depth_m ?? "")}</td><td>${esc(g.minutes ?? "")}</td></tr>`;
-    }).join("");
+    }).join("") || `<tr><td colspan="10" class="mute">No dives here.</td></tr>`;
+    $("#tb-recent").innerHTML = html(recent, true);
+    $("#tb-archive").innerHTML = html(archive, false);
+    ["tb-recent", "tb-archive"].forEach(applyView);
+    if (d.countries === "loading") pollCountries();
   } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
 }
-$("#reload").onclick = () => loadDives(true);
+$("#reload").onclick = () => { stalePreview(); loadDives(true); };
+// the site catalogue (countries) loads in the background: watch the status, re-render once when ready
+let countryPoll = null;
+function pollCountries() {
+  if (countryPoll) return;
+  countryPoll = setInterval(async () => {
+    const st = await api("/api/status").catch(() => null);
+    if (st && st.countries === "loading") return;
+    clearInterval(countryPoll); countryPoll = null;
+    if (st && st.ready) keepTicks(() => loadDives(false));
+  }, 5000);
+}
+// re-render without losing what the user ticked or unticked
+async function keepTicks(fn) {
+  const was = new Map([...document.querySelectorAll(".pick-upd,.pick-new")].map(x => [x.className + x.value, x.checked]));
+  await fn();
+  document.querySelectorAll(".pick-upd,.pick-new").forEach(x => { const k = x.className + x.value; if (was.has(k)) x.checked = was.get(k); });
+}
+
+// One click: plan the ticked dives (the last 28 days by default) with the current options, then apply.
+// the plan request for the ticked, visible dives; null when the user declines the training-center warning
+function planBody() {
+  const body = {
+    dives: picked("pick-upd"), create: picked("pick-new"),
+    garmin_wins: $("#opt-wins").checked, with_profile: $("#opt-profile").checked,
+    site_id: $("#opt-site").value || null, center_id: $("#opt-center").value || null,
+  };
+  return body.center_id && !confirm("Linking a training center sends that center a verification request for every new dive. Continue?") ? null : body;
+}
+$("#sync-now").onclick = async () => {
+  const btn = $("#sync-now"); busy(btn, true, "Syncing…");
+  try {
+    const body = planBody(); if (!body) return;
+    const p = await api("/api/plan", body);
+    if (!p.summary.field_changes) { say($("#dives-card"), "Nothing to sync — SSI is up to date."); return; }
+    currentPlan = p;
+    await applyPlan([]);
+  } catch (err) { say($("#dives-card"), err.message); } finally { busy(btn, false); }
+};
 
 $("#make-plan").onclick = async () => {
   const btn = $("#make-plan"); busy(btn, true, "Reading Garmin Dive details…");
   try {
-    const body = {
-      dives: [...document.querySelectorAll(".pick-upd:checked")].map(x => x.value),
-      create: [...document.querySelectorAll(".pick-new:checked")].map(x => x.value),
-      garmin_wins: $("#opt-wins").checked, with_profile: $("#opt-profile").checked,
-      site_id: $("#opt-site").value || null, center_id: $("#opt-center").value || null,
-    };
-    if (body.center_id && !confirm("Linking a training center sends that center a verification request for every new dive. Continue?")) return;
+    const body = planBody(); if (!body) return;
     currentPlan = await api("/api/plan", body);
     say($("#dives-card"), "");
     renderPlan(currentPlan);
@@ -256,17 +433,19 @@ $("#make-plan").onclick = async () => {
 
 function renderPlan(p) {
   const items = p.items.map(it => {
-    const head = it.action === "create" ? `New SSI dive #${esc(it.ssi_nr)} from Garmin ${esc(it.date)}` : `SSI #${esc(it.ssi_nr)} · ${esc(it.date)}${it.verified ? " · verified" : ""}`;
+    const head = it.action === "create" ? `New SSI dive #${esc(it.ssi_nr)} from Garmin ${esc(fdt(it.date))}` : `SSI #${esc(it.ssi_nr)} · ${esc(fdt(it.date))}${it.verified ? " · verified" : ""}`;
     const ch = it.changes.map(c => `<tr><td>${c.required ? "" : `<label class="selection"><input aria-label="Include ${esc(c.label)} change" type="checkbox" class="keep" value="${esc(it.garmin_id)}:${esc(c.field)}" checked></label>`}</td>
       <td>${esc(c.label)}</td><td class="mute">${esc(c.old_shown)}</td><td>${esc(c.new_shown)}</td><td class="mute">${esc(c.why)}</td></tr>`).join("");
     const kept = it.kept.map(c => `<tr><td></td><td>${esc(c.label)}</td><td>${esc(c.ssi_shown)}</td><td class="mute">${esc(c.garmin_shown)}</td><td class="mute">kept (SSI)</td></tr>`).join("");
     const sk = it.skipped.map(c => `<tr><td></td><td class="lock">${esc(c.label)}</td><td>${esc(c.ssi_shown ?? "")}</td><td class="mute">${esc(c.garmin_shown)}</td><td class="warn">${esc(c.reason)}</td></tr>`).join("");
-    return `<h4>${head}</h4><div class="table-scroll" tabindex="0" role="region" aria-label="Planned field changes"><table class="plan"><colgroup><col style="width:44px"><col style="width:28%"><col style="width:20%"><col style="width:22%"><col></colgroup><thead><tr><th></th><th>Field</th><th>SSI now</th><th>New (Garmin)</th><th></th></tr></thead><tbody>${ch}${kept}${sk}</tbody></table></div>`;
+    return `<h3 class="item">${head}</h3><div class="table-scroll" tabindex="0" role="region" aria-label="Planned field changes"><table class="plan"><colgroup><col style="width:44px"><col style="width:28%"><col style="width:20%"><col style="width:22%"><col></colgroup><thead><tr><th></th><th>Field</th><th>SSI now</th><th>New (Garmin)</th><th></th></tr></thead><tbody>${ch}${kept}${sk}</tbody></table></div>`;
   }).join("");
-  $("#plan").innerHTML = `<p><b>${esc(p.summary.update)}</b> dives to update, <b>${esc(p.summary.create)}</b> to create, <b id="plan-count">${esc(p.summary.field_changes)}</b> field changes.</p>`
+  $("#plan").innerHTML = `<p><b>${esc(plural(p.summary.update, "dive"))}</b> to update, <b>${esc(p.summary.create)}</b> to create, <b id="plan-count">${esc(p.summary.field_changes)}</b> ${p.summary.field_changes === 1 ? "field change" : "field changes"}.</p>`
     + (p.notes.length ? `<p class="warn">${p.notes.map(esc).join("<br>")}</p>` : "") + (items || "<p>Nothing to change.</p>");
   $("#apply").disabled = !p.summary.field_changes;
+  $("#apply").classList.toggle("hidden", !p.summary.field_changes);  // nothing to change: nothing to sync
   $("#plan-card").classList.remove("hidden"); $("#result-card").classList.add("hidden");
+  setStep();
   $("#plan-card").scrollIntoView({behavior: "smooth"});
 }
 $("#plan").addEventListener("change", () => {
@@ -276,22 +455,349 @@ $("#plan").addEventListener("change", () => {
   if (out) out.textContent = total;
   $("#apply").disabled = !total;
 });
-$("#cancel").onclick = () => $("#plan-card").classList.add("hidden");
-$("#apply").onclick = async () => {
-  if (!currentPlan) return;
-  const exclude = [...document.querySelectorAll(".keep:not(:checked)")].map(x => x.value);
+$("#cancel").onclick = () => { $("#plan-card").classList.add("hidden"); setStep(); };
+// any change to ticks, filters or options after a preview makes that preview stale: drop it
+function stalePreview() {
+  if (!currentPlan || $("#plan-card").classList.contains("hidden")) return;
+  currentPlan = null;
+  $("#plan-card").classList.add("hidden"); setStep();
+  say($("#dives-card"), "Your selection changed after the preview — press Preview changes again.");
+}
+$("#dives-card").addEventListener("change", e => { if (e.target.matches(".pick-upd,.pick-new,#opt-wins,#opt-profile,#opt-site,#opt-center")) stalePreview(); });
+$("#apply").onclick = () => currentPlan && applyPlan([...document.querySelectorAll(".keep:not(:checked)")].map(x => x.value));
+async function applyPlan(exclude) {
   const btn = $("#apply"); busy(btn, true, "Syncing…");
   try {
     const r = await api("/api/apply", {plan_id: currentPlan.plan_id, confirm: true, exclude});
     currentPlan = null; $("#plan-card").classList.add("hidden");
     $("#result").innerHTML = `<p>${Object.entries(r.summary).map(([k, v]) => `${esc(v)} ${esc(k)}`).join(" · ") || "Nothing sent."}</p><div class="table-scroll" tabindex="0" role="region" aria-label="Sync results"><table><thead><tr><th>Dive</th><th>Status</th><th>Details</th></tr></thead><tbody>`
-      + r.results.map(x => `<tr><td>${x.action === "create" ? "new " : ""}SSI #${esc(x.ssi_nr)} · ${esc(x.date)}</td>
+      + r.results.map(x => `<tr><td>${x.action === "create" ? "new " : ""}SSI #${esc(x.ssi_nr)} · ${esc(fdt(x.date))}</td>
         <td class="${x.status === "stored" ? "ok" : x.status === "failed" ? "bad" : "warn"}">${esc(x.status)}</td>
         <td class="mute">${x.error ? esc(x.error) : ""}${typeof x.stored === "number" ? esc(x.stored) + " of " + esc(x.sent) + " planned fields stored. " : ""}${(x.dropped_by_ssi || []).length ? "dropped by SSI: " + esc(x.dropped_by_ssi.join(", ")) : ""}${(x.stored_differently || []).length ? " stored differently: " + esc(x.stored_differently.join(", ")) : ""}</td></tr>`).join("") + "</tbody></table></div>";
     $("#result-card").classList.remove("hidden");
+    setStep();
+    $("#result-card").scrollIntoView({behavior: "smooth"});
     loadDives(true);
-  } catch (err) { say($("#plan-card"), err.message); } finally { busy(btn, false); }
-};
+  } catch (err) { say($("#plan-card").classList.contains("hidden") ? $("#dives-card") : $("#plan-card"), err.message); } finally { busy(btn, false); }
+}
+
+// --- Excel-style sort + filter per column (each list has its own) ---
+const VIEW = {"tb-recent": {sort: null, filt: {}}, "tb-archive": {sort: null, filt: {}}};
+// one source for the dive-table columns: header text, full name, filter kind (list / range / date)
+const COLS = [{h: ""}, {h: "State", kind: "list"}, {h: "SSI", name: "SSI number", kind: "range"}, {h: "Date", kind: "date"},
+  {h: "Country", kind: "list"}, {h: "Depth", name: "SSI depth", kind: "range"}, {h: "Time", name: "SSI time", kind: "range"},
+  {h: "Garmin", name: "Garmin name", kind: "list"}, {h: "Depth", name: "Garmin depth", kind: "range"}, {h: "Time", name: "Garmin time", kind: "range"}];
+const colName = c => COLS[c].name || COLS[c].h;
+let regionNames = null;
+try { regionNames = new Intl.DisplayNames(["en"], {type: "region"}); } catch (e) { /* old browser: show the code */ }
+function countryName(code, state) {
+  if (!code) return state === "loading" ? "…" : "";
+  if (code.length !== 2) return code;  // SSI gives country names (or ISO-3 codes)
+  try { return regionNames ? regionNames.of(code) : code; } catch (e) { return code; }
+}
+const cellText = (tr, c) => (tr.children[c] ? tr.children[c].textContent.trim() : "");
+const fval = (tr, c) => cellText(tr, c) || "(empty)";
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const ym = tr => tr.dataset.date ? tr.dataset.date.slice(0, 7) : "(empty)";
+const num = tr_c => { const n = parseFloat(String(tr_c).replace(/^#/, "")); return isNaN(n) ? null : n; };
+function passes(tr, c, f) {
+  if (f.kind === "range") {
+    const n = num(cellText(tr, c));
+    if (n === null) return f.empty;
+    return (f.min === null || n >= f.min) && (f.max === null || n <= f.max);
+  }
+  return f.set.has(f.kind === "date" ? ym(tr) : fval(tr, c));
+}
+function skey(tr, c) {
+  if (COLS[c].kind === "date") return tr.dataset.date || "";
+  const t = cellText(tr, c), n = num(t);
+  return n === null ? t.toLowerCase() : n;
+}
+const dataRows = tb => [...$("#" + tb).rows].filter(tr => tr.children.length > 1);
+function picked(cls) {
+  return [...document.querySelectorAll("." + cls + ":checked")].filter(x => !x.closest("tr").hidden).map(x => x.value);
+}
+function applyView(tb) {
+  const v = VIEW[tb], body = $("#" + tb), rows = dataRows(tb);
+  {
+    const {col, dir} = v.sort || {col: 3, dir: "desc"}, m = dir === "asc" ? 1 : -1, frag = document.createDocumentFragment();  // default: newest first
+    rows.map(tr => [skey(tr, col), tr])
+      .sort(([x], [y]) => (x === "") - (y === "") || (x === y ? 0 : x > y ? 1 : -1) * m)  // empty values last either way
+      .forEach(([, tr]) => frag.appendChild(tr));
+    body.appendChild(frag);
+  }
+  let shown = 0;
+  rows.forEach(tr => {
+    tr.hidden = Object.entries(v.filt).some(([c, f]) => !passes(tr, +c, f));
+    if (!tr.hidden) shown++;
+  });
+  const th = body.closest("table").tHead.rows[0].cells;
+  for (let c = 1; c < th.length; c++) {
+    const b = $(".th-sort", th[c]), f = $(".th-filt", th[c]);
+    b.dataset.dir = v.sort && v.sort.col === c ? v.sort.dir : "";
+    th[c].setAttribute("aria-sort", v.sort && v.sort.col === c ? (v.sort.dir === "asc" ? "ascending" : "descending") : "none");
+    f.classList.toggle("on", !!v.filt[c]);
+  }
+  let none = $(".no-match", body);
+  if (rows.length && !shown) { if (!none) body.insertAdjacentHTML("beforeend", `<tr class="no-match"><td colspan="${COLS.length}" class="mute">No dives match the filters.</td></tr>`); }
+  else if (none) none.remove();
+  const id = tb === "tb-recent" ? "#n-recent" : "#n-archive";
+  $(id).textContent = rows.length === shown ? plural(rows.length, "dive") : `${shown} of ${plural(rows.length, "dive")} (filtered)`;
+  const any = Object.values(VIEW).some(x => Object.keys(x.filt).length);
+  $("#filter-note").classList.toggle("hidden", !any);
+}
+document.querySelectorAll("table.dives").forEach(t => {
+  const tb = t.tBodies[0].id;
+  const tr = t.tHead.rows[0];
+  COLS.forEach((col, c) => {
+    const th = tr.appendChild(document.createElement("th"));
+    if (!c) return;
+    th.innerHTML = `<span class="th-in"><button class="th-sort" type="button" title="Sort by ${esc(colName(c))}">${esc(col.h)}</button><button class="th-filt" type="button" aria-haspopup="dialog" aria-label="Filter and sort ${esc(colName(c))}" title="Filter">▾</button></span>`;
+    $(".th-sort", th).onclick = () => {
+      const v = VIEW[tb];
+      v.sort = v.sort && v.sort.col === c ? (v.sort.dir === "asc" ? {col: c, dir: "desc"} : null) : {col: c, dir: "asc"};
+      applyView(tb);
+    };
+    $(".th-filt", th).onclick = e => { e.stopPropagation(); openFilter(tb, c, e.currentTarget); };
+  });
+});
+function openFilter(tb, c, anchor) {
+  const pop = $("#fpop"), v = VIEW[tb], kind = COLS[c].kind, cur = v.filt[c], rows = dataRows(tb);
+  const sortHtml = `<div class="srt"><button type="button" data-s="asc">${kind === "list" ? "Sort A → Z" : kind === "date" ? "Sort oldest first" : "Sort smallest first"}</button><button type="button" data-s="desc">${kind === "list" ? "Sort Z → A" : kind === "date" ? "Sort newest first" : "Sort largest first"}</button></div>`;
+  const foot = `<p class="err" role="alert" hidden></p><div class="foot"><button type="button" class="secondary" data-a="clear">Clear filter</button><span><button type="button" class="secondary" data-a="cancel">Cancel</button> <button type="button" data-a="ok">OK</button></span></div>`;
+  let body = "", read;
+  if (kind === "range") {
+    const ns = rows.map(tr => num(cellText(tr, c))).filter(n => n !== null), lo = ns.length ? Math.min(...ns) : "", hi = ns.length ? Math.max(...ns) : "";
+    const empties = rows.length - ns.length;
+    body = `<div class="grid" style="gap:8px;grid-template-columns:1fr 1fr"><label style="margin:0">From<input type="number" step="any" class="min" placeholder="${esc(lo)}" value="${cur && cur.min !== null ? esc(cur.min) : ""}"></label>
+      <label style="margin:0">To<input type="number" step="any" class="max" placeholder="${esc(hi)}" value="${cur && cur.max !== null ? esc(cur.max) : ""}"></label></div>
+      <div class="vals" style="margin-top:8px;border:0;padding:0"><label><input type="checkbox" class="emp"${!cur || cur.empty ? " checked" : ""}> Include empty<span class="n">${empties}</span></label></div>`;
+    read = () => {
+      const g = sel => { const x = $(sel, pop).value; return x === "" ? null : parseFloat(x); };
+      const f = {kind, min: g(".min"), max: g(".max"), empty: $(".emp", pop).checked};
+      return f.min === null && f.max === null && f.empty ? null : f;
+    };
+  } else if (kind === "date") {
+    const counts = tally(rows, ym);
+    const keys = [...counts.keys()].sort().reverse(), years = [...new Set(keys.map(k => k.slice(0, 4)))];
+    body = `<div class="vals"><label><input type="checkbox" class="all"> <b>(Select all)</b></label>${years.map(y => {
+      const ms = keys.filter(k => k.startsWith(y)), n = ms.reduce((t, k) => t + counts.get(k), 0);
+      return `<label><input type="checkbox" class="yr" data-y="${esc(y)}"> <b>${esc(y === "(emp" ? "No date" : y)}</b><span class="n">${n}</span></label>`
+        + (ms.map(k => `<label style="padding-left:24px"><input type="checkbox" class="v" data-y="${esc(y)}" value="${esc(k)}"${!cur || cur.set.has(k) ? " checked" : ""}> ${esc(k === "(empty)" ? k : MONTHS[+k.slice(5) - 1])}<span class="n">${counts.get(k)}</span></label>`).join(""));
+    }).join("")}</div>`;
+    read = () => { const on = [...pop.querySelectorAll(".v:checked")].map(x => x.value); return on.length === keys.length ? null : {kind, set: new Set(on)}; };
+  } else {
+    const counts = tally(rows, tr => fval(tr, c));
+    const vals = [...counts.keys()].sort((a, b) => a.localeCompare(b));
+    body = `<input type="text" placeholder="Search ${esc(colName(c))}…" aria-label="Search values">
+      <div class="vals"><label><input type="checkbox" class="all"> <b>(Select all)</b></label>${vals.map(x => `<label><input type="checkbox" class="v" value="${esc(x)}"${!cur || cur.set.has(x) ? " checked" : ""}> ${esc(x)}<span class="n">${counts.get(x)}</span></label>`).join("")}</div>`;
+    read = () => { const on = [...pop.querySelectorAll(".v")].filter(x => x.checked && !x.closest("label").hidden).map(x => x.value); return on.length === vals.length ? null : {kind, set: new Set(on)}; };
+  }
+  pop.innerHTML = `<b style="display:block;margin-bottom:8px;color:var(--accent)">${esc(colName(c))}</b>` + sortHtml + body + foot;
+  const boxes = () => [...pop.querySelectorAll(".v")].filter(x => !x.closest("label").hidden);
+  const syncAll = () => {
+    pop.querySelectorAll(".yr").forEach(y => { const m = [...pop.querySelectorAll(`.v[data-y="${y.dataset.y}"]`)]; y.checked = m.every(x => x.checked); y.indeterminate = !y.checked && m.some(x => x.checked); });
+    const a = $(".all", pop); if (a) { const b = boxes(); a.checked = b.length > 0 && b.every(x => x.checked); a.indeterminate = !a.checked && b.some(x => x.checked); }
+  };
+  syncAll();
+  const all = $(".all", pop); if (all) all.onchange = e => { boxes().forEach(x => x.checked = e.target.checked); syncAll(); };
+  pop.querySelectorAll(".yr").forEach(y => y.onchange = () => { pop.querySelectorAll(`.v[data-y="${y.dataset.y}"]`).forEach(x => x.checked = y.checked); syncAll(); });
+  pop.querySelectorAll(".v").forEach(x => x.onchange = syncAll);
+  const q = $("input[type=text]", pop);
+  if (q) q.oninput = e => {
+    const t = e.target.value.toLowerCase();
+    pop.querySelectorAll(".v").forEach(x => { const l = x.closest("label"); l.hidden = !!t && !x.value.toLowerCase().includes(t); x.checked = !l.hidden; });
+    syncAll();
+  };
+  pop.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { v.sort = {col: c, dir: b.dataset.s}; applyView(tb); closeFilter(); });
+  pop.querySelector("[data-a=clear]").onclick = () => { delete v.filt[c]; applyView(tb); closeFilter(); stalePreview(); };
+  pop.querySelector("[data-a=cancel]").onclick = closeFilter;
+  pop.querySelector("[data-a=ok]").onclick = () => {
+    const f = read();
+    if (f && f.kind === "range" && f.min !== null && f.max !== null && f.min > f.max) { say(pop, "“From” is larger than “To”."); return; }
+    if (f) v.filt[c] = f; else delete v.filt[c];
+    applyView(tb); closeFilter(); stalePreview();
+  };
+  pop.onkeydown = e => { if (e.key === "Enter" && e.target.tagName === "INPUT" && e.target.type !== "checkbox") pop.querySelector("[data-a=ok]").click(); };
+  pop.hidden = false;
+  const r = anchor.getBoundingClientRect();
+  pop.style.top = Math.max(8, Math.min(r.bottom + 6, innerHeight - pop.offsetHeight - 8)) + "px";
+  pop.style.left = Math.max(8, Math.min(r.left - 200, innerWidth - pop.offsetWidth - 8)) + "px";
+  pop._anchor = anchor;
+  (q || $("input", pop)).focus();
+}
+function closeFilter() { const p = $("#fpop"); if (p.hidden) return; p.hidden = true; if (p._anchor) p._anchor.focus(); }
+document.addEventListener("click", e => { if (!$("#fpop").hidden && !e.target.closest("#fpop")) closeFilter(); });
+
+// --- statistics: one row per logical dive (Garmin values first, SSI as fallback) ---
+let lastDives = null;
+const GENERIC = /^(single-gas dive|multi-gas dive|gauge dive|dive|.*single-gas dive)$/i;
+function statRows() {
+  return (lastDives ? lastDives.rows : []).map(r => {
+    const s = r.ssi || {}, g = r.garmin || {}, date = when(r);
+    return {date, depth: g.max_depth_m ?? s.max_depth_m ?? null, min: g.minutes ?? s.minutes ?? null,
+      country: r.country ? countryName(r.country) : "", site: g.name && !GENERIC.test(g.name) ? g.name : "", nr: s.nr};
+  }).filter(r => r.date);
+}
+const plural = (n, one, many = one + "s") => `${n} ${n === 1 ? one : many}`;
+const nf = (v, d = 0) => Number(v).toLocaleString("en", {maximumFractionDigits: d, minimumFractionDigits: d});
+const fdate = t => t ? t.slice(0, 10).split("-").reverse().join(".") : "";
+const fdt = t => t ? fdate(t) + (t.length > 10 ? " " + t.slice(11, 16) : "") : "";  // DD.MM.YYYY HH:MM
+const niceStep = v => { const p = 10 ** Math.floor(Math.log10(v || 1)), n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; };
+const niceTicks = (max, n = 4, whole = false) => { const st = Math.max(whole ? 1 : 0, niceStep(Math.max(max, 1) / n)), top = Math.ceil(Math.max(max, 1) / st) * st, t = []; for (let v = 0; v <= top + 1e-9; v += st) t.push(v); return t; };
+// bar path: square at the baseline, 4px rounded at the data end
+function vbar(x, y, w, h, r = 4) { r = Math.min(r, w / 2, h); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; }
+function hbarP(x, y, w, h, r = 4) { r = Math.min(r, h / 2, w); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; }
+
+function columns(data, {W = 560, H = 210, yLabel = ""} = {}) {
+  const L = 34, B = 30, T = 14, R = 6, iw = W - L - R, ih = H - T - B, ticks = niceTicks(Math.max(1, ...data.map(d => d.v)), 4, true), max = ticks[ticks.length - 1];
+  const band = iw / Math.max(1, data.length), bw = Math.max(2, Math.min(36, band - 2));
+  let g = ticks.map(t => { const y = T + ih - t / max * ih; return `<line class="grid-l" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/><text x="${L - 6}" y="${y + 4}" text-anchor="end">${nf(t)}</text>`; }).join("");
+  const every = Math.ceil(data.length / Math.max(4, Math.floor(iw / 44)));
+  data.forEach((d, i) => {
+    const x = L + i * band + (band - bw) / 2, h = d.v / max * ih, y = T + ih - h;
+    if (d.v > 0) g += `<path class="mk" d="${vbar(x, y, bw, h)}"/>`;
+    g += `<rect class="hit" x="${L + i * band}" y="${T}" width="${band}" height="${ih}" data-tip="${esc(d.tip)}"/>`;
+    if (d.lab && (i % every === 0 || d.force)) g += `<text x="${x + bw / 2}" y="${H - B + 16}" text-anchor="middle">${esc(d.lab)}</text>`;
+    if (d.lab2) g += `<text x="${x + bw / 2}" y="${H - B + 29}" text-anchor="middle" class="lbl">${esc(d.lab2)}</text>`;
+  });
+  g += `<line class="axis" x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(yLabel)}">${g}</svg>`;
+}
+function hbars(data, {W = 560} = {}) {
+  const row = 30, H = data.length * row + 6, L = 130, R = 44, iw = W - L - R, max = Math.max(1, ...data.map(d => d.v));
+  let g = "";
+  data.forEach((d, i) => {
+    const y = i * row + 6, w = Math.max(2, d.v / max * iw);
+    g += `<text class="lbl" x="${L - 10}" y="${y + 15}" text-anchor="end">${esc(d.lab.length > 18 ? d.lab.slice(0, 17) + "…" : d.lab)}</text>`
+      + `<path class="mk" d="${hbarP(L, y, w, 20)}"/><text class="val" x="${L + w + 6}" y="${y + 15}">${nf(d.v)}</text>`
+      + `<rect class="hit" x="0" y="${y - 3}" width="${W}" height="${row}" data-tip="${esc(d.tip)}"/>`;
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dives per country">${g}</svg>`;
+}
+function scatter(pts, {W = 560, H = 240} = {}) {
+  const L = 34, B = 30, T = 10, R = 8, iw = W - L - R, ih = H - T - B;
+  const xt = niceTicks(Math.max(10, ...pts.map(p => p.x)), 6), yt = niceTicks(Math.max(5, ...pts.map(p => p.y)), 4);
+  const xm = xt[xt.length - 1], ym = yt[yt.length - 1];
+  let g = "";
+  yt.forEach(v => { const y = T + v / ym * ih; g += `<line class="grid-l" x1="${L}" x2="${W - R}" y1="${y}" y2="${y}"/><text x="${L - 6}" y="${y + 4}" text-anchor="end">${nf(v)}</text>`; });
+  xt.forEach(v => { const x = L + v / xm * iw; g += `<text x="${x}" y="${H - B + 16}" text-anchor="middle">${nf(v)}</text>`; });
+  g += `<text x="${W - R}" y="${H - 2}" text-anchor="end">minutes →</text>`;
+  pts.forEach(p => { const x = L + p.x / xm * iw, y = T + p.y / ym * ih;
+    g += `<circle class="dot" cx="${x}" cy="${y}" r="5"/><circle class="hit" cx="${x}" cy="${y}" r="11" data-tip="${esc(p.tip)}"/>`; });
+  g += `<line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${T + ih}"/>`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Depth versus dive time">${g}</svg>`;
+}
+
+// every chart can also be read as a table (keyboard, screen readers, touch screens without hover)
+const asTable = (head, rows) => `<details class="tbl"><summary>Show as table</summary><table class="sites"><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></details>`;
+function renderStats() {
+  const open = [...document.querySelectorAll("#stats-body details.tbl")].map(d => d.open);
+  try { drawStats(); } finally { document.querySelectorAll("#stats-body details.tbl").forEach((d, i) => { if (open[i]) d.open = true; }); }
+}
+function drawStats() {
+  const rows = statRows();
+  const full = Math.max(300, ($("#stats .in").clientWidth || 1100) - 2 * (innerWidth <= 760 ? 16 : 40));
+  const half = innerWidth <= 760 ? full : Math.floor((full - 40) / 2);
+  if (!rows.length) { $("#stats-body").innerHTML = "<p>No dives loaded yet.</p>"; return; }
+  const dep = rows.filter(r => r.depth != null), mins = rows.filter(r => r.min != null);
+  const total = mins.reduce((t, r) => t + r.min, 0), deepest = dep.reduce((a, r) => r.depth > a.depth ? r : a, dep[0] || {depth: 0});
+  const longest = mins.reduce((a, r) => r.min > a.min ? r : a, mins[0] || {min: 0});
+  const countries = tally(rows, r => r.country);
+  const sorted = [...rows].sort((a, b) => a.date.localeCompare(b.date)), first = sorted[0].date, last = sorted[sorted.length - 1].date;
+  const tile = (k, v, unit, sub) => `<div class="tile"><div class="k">${k}</div><div class="v">${v}${unit ? `<small>${unit}</small>` : ""}</div><div class="s">${sub || "&nbsp;"}</div></div>`;
+  let html = `<div class="tiles">
+    ${tile("Dives", nf(rows.length), "", `${fdate(first)} – ${fdate(last)}`)}
+    ${tile("Underwater", nf(total / 60, 1), "h", `${nf(total)} minutes`)}
+    ${tile("Deepest", nf(deepest.depth, 1), "m", esc([deepest.site, deepest.country, fdate(deepest.date)].filter(Boolean).join(" · ")))}
+    ${tile("Longest", nf(longest.min), "min", esc([longest.site, longest.country, fdate(longest.date)].filter(Boolean).join(" · ")))}
+    ${tile("Average depth", nf(dep.reduce((t, r) => t + r.depth, 0) / Math.max(1, dep.length), 1), "m", `average dive ${nf(total / Math.max(1, mins.length))} min`)}
+    ${tile("Countries", nf(countries.size), "", esc([...countries.keys()].slice(0, 4).join(", ")))}
+  </div><div class="charts">`;
+  // dives per month, first dive month .. last dive month (empty months shown as gaps)
+  const per = tally(rows, r => r.date.slice(0, 7));
+  const months = []; let [y, m] = first.slice(0, 7).split("-").map(Number); const [ly, lm] = last.slice(0, 7).split("-").map(Number);
+  while (y < ly || (y === ly && m <= lm)) { const k = `${y}-${String(m).padStart(2, "0")}`; months.push({k, v: per.get(k) || 0, lab: MONTHS[m - 1][0], lab2: m === 1 || !months.length ? String(y) : "", name: `${MONTHS[m - 1]} ${y}`, tip: `${MONTHS[m - 1]} ${y}\n${plural(per.get(k) || 0, "dive")}`}); if (++m > 12) { m = 1; y++; } }
+  html += `<div class="chart wide"><h3>Dives per month</h3><p class="sub">${fdate(first)} – ${fdate(last)}</p>${columns(months, {W: full, H: 230, yLabel: "Dives per month"})}${asTable(["Month", "Dives"], months.filter(x => x.v).map(x => [x.name, x.v]))}</div>`;
+  // depth distribution, 5 m bins
+  const bins = []; const top = Math.max(5, Math.ceil((deepest.depth || 5) / 5) * 5);
+  for (let a = 0; a < top; a += 5) { const n = dep.filter(r => r.depth >= a && (r.depth < a + 5 || (a + 5 === top && r.depth <= top))).length; bins.push({v: n, lab: `${a}`, force: true, name: `${a}–${a + 5} m`, tip: `${a}–${a + 5} m\n${plural(n, "dive")}`}); }
+  html += `<div class="chart"><h3>Max depth</h3><p class="sub">dives per 5 m band (metres)</p>${columns(bins, {W: half, yLabel: "Max depth distribution"})}${asTable(["Max depth", "Dives"], bins.map(b => [b.name, b.v]))}</div>`;
+  // countries
+  const cdata = [...countries.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, v]) => ({lab: k, v, tip: `${k}\n${plural(v, "dive")}`}));
+  const noCountry = rows.length - [...countries.values()].reduce((t, v) => t + v, 0);
+  html += `<div class="chart"><h3>Countries</h3><p class="sub">dives per country${countries.size > 8 ? " · top 8" : ""}${noCountry && cdata.length ? ` · ${plural(noCountry, "dive")} without a known country` : ""}</p>${cdata.length ? hbars(cdata, {W: half}) + asTable(["Country", "Dives"], [...countries.entries()].sort((a, b) => b[1] - a[1])) : '<p class="mute">Countries appear a minute after login.</p>'}</div>`;
+  // depth vs time
+  const pts = rows.filter(r => r.depth != null && r.min != null).map(r => ({x: r.min, y: r.depth, tip: `${[r.site, r.country].filter(Boolean).join(" · ") || "Dive"}${r.nr ? " #" + r.nr : ""}\n${fdate(r.date)}\n${nf(r.depth, 1)} m · ${r.min} min`}));
+  html += `<div class="chart"><h3>Depth vs. dive time</h3><p class="sub">each dot is a dive · depth in metres, downwards</p>${scatter(pts, {W: half})}${asTable(["Date", "Dive", "Depth (m)", "Time (min)"], rows.filter(r => r.depth != null && r.min != null).sort((a, b) => b.date.localeCompare(a.date)).map(r => [fdate(r.date), [r.site, r.country].filter(Boolean).join(" · "), nf(r.depth, 1), r.min]))}</div>`;
+  // top sites
+  const sites = tally(rows, r => r.site);
+  const st = [...sites.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 8);
+  html += `<div class="chart"><h3>Most-dived sites</h3><p class="sub">by Garmin dive name</p><table class="sites"><tbody>${st.map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}×</td></tr>`).join("") || '<tr><td class="mute">No named sites yet.</td><td></td></tr>'}</tbody></table></div>`;
+  $("#stats-body").innerHTML = html + "</div>";
+  $("#stats-src").textContent = lastDives.countries === "loading" ? "countries still loading…" : `${plural(rows.length, "dive")} from Garmin + SSI`;
+}
+$("#stats-btn").onclick = () => { $("#stats").hidden = false; renderStats(); document.body.style.overflow = "hidden"; $("#stats-close").focus(); };
+function closeStats() { $("#stats").hidden = true; document.body.style.overflow = ""; $("#tip").hidden = true; $("#stats-btn").focus(); }
+$("#stats-close").onclick = closeStats;
+let tipFor = null;
+$("#stats").addEventListener("mousemove", e => {
+  const t = e.target.closest("[data-tip]"), tip = $("#tip");
+  if (!t) { tip.hidden = true; tipFor = null; return; }
+  if (t !== tipFor) { tip.textContent = t.dataset.tip; tip.hidden = false; tipFor = t; }
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + "px";
+  tip.style.top = (e.clientY - h - 12 < 8 ? e.clientY + 16 : e.clientY - h - 12) + "px";
+});
+$("#stats").addEventListener("mouseleave", () => { $("#tip").hidden = true; tipFor = null; });
+
+// --- guided tour: spotlight one part of the page at a time ---
+const TOUR = [
+  {el: "#steps", t: "Three steps, in order", x: "dive-sync works top to bottom: log in, review your dives, then sync. The highlighted step is where you are now."},
+  {el: "#login-grid", t: "Step 1 — log in to both", x: "Garmin is the source, SSI the destination. Garmin may ask for a code from its e-mail or authenticator app. Logins stay in memory only and are forgotten when the app stops."},
+  {el: "#toolbar", t: "Step 2 — the three buttons", x: "Reload fetches both logbooks again. Preview changes shows every field before anything is sent. Sync now sends the ticked dives in one click — no preview."},
+  {el: "#grp-recent", t: "Last 28 days", x: "Your recent dives, newest first; matched and Garmin-only ones are ticked for you. Country comes from the SSI dive site (or the nearest SSI site to the Garmin GPS) and fills in a few seconds after login. Matched = the same dive is in both logbooks. Garmin only = not in SSI yet; it will be created. Unsure = check by hand."},
+  {el: "#grp-recent thead", t: "Sort and filter like Excel", x: "Click a column name to sort (again = reverse, third time = off). The ▾ button opens a filter that fits the column: Date by year or month, depth / time / SSI number by a from–to range, State, Country and Garmin name by ticking values (with search). Each list has its own. Dives hidden by a filter are not synced, even if ticked."},
+  {el: "#grp-archive", t: "Archive", x: "Everything older, newest first, folded away and not ticked. Open it and tick a dive only when you want to fix or add an old one."},
+  {el: "#opts", t: "Options", x: "Garmin wins: on conflicting values Garmin's is used. Fields SSI locked after a training center verified a dive are never touched. Dive site and training center for new dives are under ‘New dives’."},
+  {el: "#stats-btn", t: "Statistics", x: "Your dives at a glance: totals, deepest and longest dive, dives per month, depth bands, countries, depth vs. time and your most-dived sites. Every chart can also be shown as a table. Available once you are logged in to both."},
+  {el: "#plan-card", t: "Step 3 — preview, sync, check", x: "The preview lists every field old → new; untick anything you don't want, then Sync these changes. The result is read back from SSI and shows what it stored or dropped."},
+];
+let tourAt = 0;
+function tourShow(i) {
+  const steps = TOUR.filter(s => { const e = $(s.el); return e && (e.offsetParent || s.el === "#plan-card"); });
+  if (i < 0 || i >= steps.length) return tourEnd();
+  tourAt = i;
+  const s = steps[i], tour = $("#tour"), ring = $("#tour-ring"), pop = $("#tour-pop");
+  let e = $(s.el);
+  if (!e.offsetParent) e = $("#dives-card");  // preview not open yet: point at where it appears
+  tour.hidden = false;
+  e.scrollIntoView({block: "center", behavior: "instant"});
+  const r = e.getBoundingClientRect(), pad = 8;
+  Object.assign(ring.style, {left: r.left - pad + "px", top: r.top - pad + "px", width: r.width + 2 * pad + "px", height: Math.min(r.height, innerHeight * .6) + 2 * pad + "px"});
+  $("#tour-title").textContent = s.t; $("#tour-text").textContent = s.x;
+  $("#tour-count").textContent = `${i + 1} / ${steps.length}`;
+  $("#tour-back").disabled = i === 0;
+  $("#tour-next").textContent = i === steps.length - 1 ? "Done" : "Next";
+  const ph = pop.offsetHeight, below = r.top + Math.min(r.height, innerHeight * .6) + pad + 16;
+  pop.style.top = (below + ph < innerHeight ? below : Math.max(16, r.top - pad - 16 - ph)) + "px";
+  pop.style.left = Math.min(Math.max(16, r.left), innerWidth - pop.offsetWidth - 16) + "px";
+  $("#tour-next").focus();
+}
+function tourEnd() { $("#tour").hidden = true; $("#help-btn").focus(); }
+$("#help-btn").onclick = () => tourShow(0);
+$("#tour-next").onclick = () => tourShow(tourAt + 1);
+$("#tour-back").onclick = () => tourShow(tourAt - 1);
+$("#tour-close").onclick = tourEnd;
+// keyboard for the layers, topmost first: filter popup, tour, stats
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    if (!$("#fpop").hidden) closeFilter(); else if (!$("#tour").hidden) tourEnd(); else if (!$("#stats").hidden) closeStats();
+  } else if (!$("#tour").hidden && (e.key === "ArrowRight" || e.key === "ArrowLeft")) tourShow(tourAt + (e.key === "ArrowRight" ? 1 : -1));
+});
+let resizeFrame = 0, statsFrame = 0;
+addEventListener("resize", () => { if ($("#stats").hidden || statsFrame) return; statsFrame = requestAnimationFrame(() => { statsFrame = 0; renderStats(); }); });
+addEventListener("resize", () => { if ($("#tour").hidden || resizeFrame) return; resizeFrame = requestAnimationFrame(() => { resizeFrame = 0; tourShow(tourAt); }); });
 
 setInterval(() => api("/api/heartbeat", {}).catch(() => {}), 60000);
 if (!KEY) {

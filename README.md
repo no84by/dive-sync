@@ -25,6 +25,7 @@ Taken from the built-in demo (`python -m tests.demo_server`) with made-up dives 
 |---|---|
 | ![Notice shown at every start](docs/screenshots/1-notice.png) | ![Matched dives](docs/screenshots/2-dives.png) |
 | ![Preview: every field, old → new, locked fields shown](docs/screenshots/3-preview.png) | ![Result read back from SSI](docs/screenshots/4-result.png) |
+| ![Stats: totals and charts, each also as a table](docs/screenshots/5-stats.png) | |
 
 ## Maintenance — please read
 
@@ -33,7 +34,7 @@ including tank pressures, into my SSI logbook. I'm sharing it in case it helps s
 are welcome to use it and serve yourself. **I will probably not follow up on it, and I will not
 troubleshoot setups that don't work on your computer.** The code comes as it is. Forks are welcome.
 
-## Known to work with (verified 03.11.2026)
+## Known to work with (verified 09.11.2026)
 
 | Interface | Version |
 |---|---|
@@ -56,16 +57,29 @@ refuses to write and tells you (exit code 4) — it does not guess.
 
 ```bash
 pipx install git+https://github.com/no84by/dive-sync      # latest from the repository
-# or download the .whl from the Releases page:  pipx install ./dive_sync-0.1.0-py3-none-any.whl
+# or download the .whl from the Releases page:  pipx install ./dive_sync-0.2.0-py3-none-any.whl
 dive-sync                                                  # opens the browser
 ```
 
 ## Three ways to use it
 
-1. **Browser.** Run `dive-sync`. The page opens on `http://127.0.0.1:<random port>`. Log in to Garmin
-   and SSI on the page (Garmin may ask for its e-mail/authenticator code), review the matched dives,
-   press **Preview changes**, untick anything you don't want, then **Sync these changes**. The result
-   is read back from SSI and shows what was stored and what SSI dropped.
+1. **Browser.** Run `dive-sync`. The page opens on `http://127.0.0.1:<random port>` and walks you
+   through three steps (**? Help / tour** explains every part of the page):
+   1. **Log in** to Garmin and SSI (Garmin may ask for its e-mail/authenticator code).
+   2. **Review dives.** Your dives are in two lists, newest first: **Last 28 days** (open; matched and
+      Garmin-only dives ticked for you) and **Archive** (folded, not ticked). Unsure and merged
+      matches are never synced. Every column sorts on a click and has an Excel-style
+      filter: Date by year or month, numbers by a from–to range, State / Country / Garmin name by
+      ticking values. Dives hidden by a filter are never synced, even if ticked.
+   3. **Sync & check.** **Preview changes** shows every field old → new; untick anything you don't
+      want, then **Sync these changes** (changing ticks or filters afterwards discards the preview).
+      **Sync now** does the same for the ticked dives in one click, without the preview. The result
+      is read back from SSI and shows what was stored and what SSI dropped.
+
+   **Stats** shows your totals, deepest and longest dive, dives per month, depth bands, countries,
+   depth vs. time and most-dived sites; every chart can also be shown as a table. The **Country**
+   column comes from SSI's public dive-site catalogue (by the dive's SSI site, or the nearest site to
+   the Garmin GPS start point), which loads in the background for about a minute after login.
 2. **Command line.** The same app, scripted:
 
    ```bash

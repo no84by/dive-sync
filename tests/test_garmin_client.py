@@ -44,7 +44,7 @@ def test_mfa_flow():
 
 def test_login_failure_is_short():
     c = GarminClient(factory=lambda e, p: FakeApi(e, p, fail=True))
-    with pytest.raises(LoginFailed, match="401") as ei:
+    with pytest.raises(LoginFailed, match="wrong e-mail or password") as ei:
         c.login("x@example.com", "pw")
     assert "more" not in str(ei.value)
 

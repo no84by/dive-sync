@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.0 — 09.11.2026 (experimental)
+
+Fixes
+- Garmin dive details failed with "Invalid API path" (tank sensors): query parameters are now passed
+  the way garminconnect 0.3.20 requires, through its public `connectapi` call.
+- SSI saves could fail right after the big logbook download (a dropped connection was reused): large
+  downloads now use their own short-lived connection, and every save starts a fresh one.
+- `dive-sync status` no longer fails on new status fields; a wrong Garmin password now says so.
+
+Web page
+- Step-by-step layout (Log in → Review dives → Sync & check) with a guided Help / tour; the dive
+  section stays locked until both logins are done; logging out clears everything loaded.
+- Two dive lists, newest first: Last 28 days (ticked) and Archive (folded, not ticked).
+- Excel-style sorting and filters per column (Date by year/month, number ranges, value lists).
+- Country column from SSI's public dive-site catalogue (ISO country, shown in English).
+- Sync now: one click for the ticked dives. A preview is discarded when the selection changes.
+- Stats: totals, deepest/longest dive, dives per month, depth bands, countries, depth vs. time and
+  most-dived sites; every chart also as a table.
+- Accessibility and phone fixes: named controls, step state in text, no buttons breaking mid-word,
+  European dates throughout.
+
 ## 0.1.0 — 03.11.2026 (experimental)
 
 First release. Garmin → SSI: matching by day/depth/duration, fill-empty and Garmin-wins rules,
